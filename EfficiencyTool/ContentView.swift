@@ -174,8 +174,8 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
            # 主循环：根据选择的模式监控进程
            for pid in $(\(psCommand)); do
              if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
-               [[ $sleep_time -gt 200 ]] && sleep_time=$((sleep_time - 36))
-               [[ $sleep_time -gt 90 ]]  && sleep_time=$((sleep_time - 9))
+               [[ $sleep_time -gt 200 ]] && sleep_time=$((sleep_time - 46))
+               [[ $sleep_time -gt 90 ]]  && sleep_time=$((sleep_time - 19))
                [[ $sleep_time -gt 15 ]]  && sleep_time=$((sleep_time - 3))
                taskpolicy -b -p $pid
                full_path=$(ps -p $pid -o comm=)
@@ -210,7 +210,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 
                   # If PID is already in the assigned list
                   if [[ $sleep_time -gt 305 ]]; then
-                    sleep_time=$((sleep_time - 7))
+                    sleep_time=$((sleep_time - 17))
                   fi
                   if [[ $sleep_time -gt 15 ]]; then
                     sleep_time=$((sleep_time + 1))
