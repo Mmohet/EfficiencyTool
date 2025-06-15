@@ -6,17 +6,47 @@ struct ContentView: View {
     @State private var process: Process? = nil
     @State private var pipe: Pipe? = nil
 
+    // 可选进程匹配模式列表
+    private let allPatterns = ["Renderer", "Chrome", "Edge", "Reading", "bilibili", "Terminal", "wine"]
+    @State private var selectedPatterns: [String: Bool] = [
+        "Renderer": true,
+        "Chrome": true,
+        "Edge": false,
+        "Reading": false,
+        "bilibili": false,
+        "Terminal": true,
+        "wine": false
+    ]
+
+    // Minecraft/Java 检测开关
+    @State private var enableFocusCheck = false
+
     var body: some View {
         VStack(spacing: 12) {
-            Button(isRunning ? "停止脚本" : "运行脚本") {
-                if isRunning {
-                    stopScript()
-                } else {
-                    startScript()
+            // 模式选择列表（macOS 不支持 EditButton）
+            GroupBox(label: Text("选择要监控的进程模式:")) {
+                VStack(alignment: .leading) {
+                    ForEach(allPatterns, id: \.self) { pattern in
+                        Toggle(pattern, isOn: Binding(
+                            get: { selectedPatterns[pattern] ?? false },
+                            set: { selectedPatterns[pattern] = $0 }
+                        ))
+                    }
                 }
+                .padding()
+            }
+
+            // Minecraft 检测开关
+            Toggle("启用 Minecraft/Java 前后台检测", isOn: $enableFocusCheck)
+                .padding(.bottom, 8)
+
+            // 运行/停止 按钮
+            Button(isRunning ? "停止脚本" : "运行脚本") {
+                isRunning ? stopScript() : startScript()
             }
             .padding(.vertical, 8)
 
+            // 输出区域
             ScrollViewReader { proxy in
                 ScrollView {
                     Text(output)
@@ -25,20 +55,24 @@ struct ContentView: View {
                         .id("end")
                 }
                 .onChange(of: output) { _ in
-                    // 自动滚动到最新输出
                     proxy.scrollTo("end", anchor: .bottom)
                 }
             }
         }
         .padding()
-        .frame(minWidth: 500, minHeight: 350)
+        .frame(minWidth: 500, minHeight: 450)
     }
 
-    /// 实时启动脚本并读取输出
     private func startScript() {
         output = ""
 
-        let script = """
+        // 构建 grep 模式字符串
+        let patterns = allPatterns
+            .filter { selectedPatterns[$0] == true }
+            .joined(separator: "|")
+
+        // 生成脚本内容
+        var script = """
         #!/bin/bash
 
         assigned_pids=()
@@ -49,85 +83,75 @@ struct ContentView: View {
            timestamp=$(date "+%H:%M")
            echo "[$timestamp]"
 
-           for pid in $(ps aux | grep -E 'Renderer|Chrome|Edge|Reading|bilibili|Terminal|wine' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'); do
-             # If PID is not in the list of assigned PIDs
+           # 主循环：根据选择的模式监控进程
+           for pid in $(ps aux | grep -E '\(patterns)' | grep -v grep | awk '{print $2}'); do
              if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
-               if [[ $sleep_time -gt 200 ]]; then
-                 sleep_time=$((sleep_time - 36))
-               fi
-               if [[ $sleep_time -gt 90 ]]; then
-                 sleep_time=$((sleep_time - 9))
-               fi
-               if [[ $sleep_time -gt 15 ]]; then
-                 sleep_time=$((sleep_time - 3))
-               fi
-              taskpolicy -b -p $pid
-              full_path=$(ps -p $pid -o comm=)
-              process_name=$(echo "$full_path" | sed -E 's#.*/([^/]*\\.app)/.*MacOS/##')
-              echo "Assigned '$process_name' (PID $pid) to efficiency cores"
-               # Add the PID to the list of assigned ones
+               [[ $sleep_time -gt 200 ]] && sleep_time=$((sleep_time - 36))
+               [[ $sleep_time -gt 90 ]]  && sleep_time=$((sleep_time - 9))
+               [[ $sleep_time -gt 15 ]]  && sleep_time=$((sleep_time - 3))
+               taskpolicy -b -p $pid
+               full_path=$(ps -p $pid -o comm=)
+               process_name=$(echo "$full_path" | sed -E 's#.*/([^/]*\\.app)/.*MacOS/##')
+               echo "Assigned '$process_name' (PID $pid) to efficiency cores"
                assigned_pids+=($pid)
              fi
-         
-         
            done
 
-        ## --- Updated Block for Minecraft/Java Process using ps aux ---
-        ## Get the frontmost (active) application.
-        #front_app=$(osascript -e 'tell application "System Events" to get name of first process whose frontmost is true')
-        #
-        ## Use ps aux to check if any process matching "minecraft" or "java" exists.
-        ## This takes the first matching process.
-        #process_line=$(ps aux | grep -E 'minecraft|java' | grep -v grep | head -n 1)
-        #if [[ -n "$process_line" ]]; then
-        #    minecraft_pid=$(echo "$process_line" | awk '{print $2}')
-        #    echo "Minecraft/Java process found with PID: $minecraft_pid"
-        #    
-        #    # Check if the active application is Minecraft or Java
-        #    if [[ "$front_app" =~ [Mm]inecraft || "$front_app" =~ [Jj]ava ]]; then
-        #         echo "Minecraft/Java is frontmost. Sending PID $minecraft_pid to performance cores."
-        #         taskpolicy -B -p "$minecraft_pid"
-        #    else
-        #         echo "Minecraft/Java is in background. Sending PID $minecraft_pid to efficiency cores."
-        #         taskpolicy -b -p "$minecraft_pid"
-        #    fi
-        #else
-        #    echo "No Minecraft/Java process found using ps aux."
-        #fi
-        # --- End of Updated Block ---
-
-               # If PID is already in the assigned list
-               if [[ $sleep_time -gt 305 ]]; then
-                 sleep_time=$((sleep_time - 7))
-               fi
-               if [[ $sleep_time -gt 15 ]]; then
-                 sleep_time=$((sleep_time + 1))
-               fi
-               if [[ $sleep_time -gt 90 ]]; then
-                 sleep_time=$((sleep_time + 1))
-               fi
-               if [[ $sleep_time -gt 120 ]]; then
-                 sleep_time=$((sleep_time + 2))
-               fi
-               if [[ $sleep_time -gt 180 ]]; then
-                 sleep_time=$((sleep_time + 3))
-               fi
-               if [[ $sleep_time -gt 200 ]]; then
-                 sleep_time=$((sleep_time + 5))
-               fi
-               if [[ $sleep_time -lt 15 ]]; then
-                 sleep_time=$((sleep_time + 25))
-               fi
-               if [[ $sleep_time -lt 1 ]]; then
-                 sleep_time=$((10))
-               fi
-           echo "Current sleep time: $sleep_time seconds"
-           echo -e "\n\n"
-           # Wait for the adjusted sleep time before checking again
-           sleep $sleep_time
-         done
         """
 
+        // 如果启用了 Minecraft 检测，追加相关逻辑
+        if enableFocusCheck {
+            script += """
+           front_pid=$(osascript -e 'tell application "System Events" to get unix id of first process whose frontmost is true')
+
+           if [[ -n "$front_pid" ]]; then
+               echo "Frontmost process PID: $front_pid"
+               echo "Sending PID $front_pid to efficiency cores."
+               # -b 表示 background / efficiency cores
+               taskpolicy -b -p "$front_pid"
+           else
+               echo "无法获取前台应用的 PID。"
+               exit 1
+           fi
+        """
+        }
+
+        // 追加剩余统一逻辑
+        script += """
+           # --- End of Updated Block ---
+
+                  # If PID is already in the assigned list
+                  if [[ $sleep_time -gt 305 ]]; then
+                    sleep_time=$((sleep_time - 7))
+                  fi
+                  if [[ $sleep_time -gt 15 ]]; then
+                    sleep_time=$((sleep_time + 1))
+                  fi
+                  if [[ $sleep_time -gt 90 ]]; then
+                    sleep_time=$((sleep_time + 1))
+                  fi
+                  if [[ $sleep_time -gt 120 ]]; then
+                    sleep_time=$((sleep_time + 2))
+                  fi
+                  if [[ $sleep_time -gt 180 ]]; then
+                    sleep_time=$((sleep_time + 3))
+                  fi
+                  if [[ $sleep_time -gt 200 ]]; then
+                    sleep_time=$((sleep_time + 5))
+                  fi
+                  if [[ $sleep_time -lt 15 ]]; then
+                    sleep_time=$((sleep_time + 25))
+                  fi
+                  if [[ $sleep_time -lt 1 ]]; then
+                    sleep_time=$((10))
+                  fi
+           echo "Current sleep time: $sleep_time seconds"
+           echo -e "\\n\\n"
+           sleep $sleep_time
+        done
+        """
+
+        // 启动 Process
         let newPipe = Pipe()
         let newProcess = Process()
         newProcess.executableURL = URL(fileURLWithPath: "/bin/bash")
@@ -135,7 +159,6 @@ struct ContentView: View {
         newProcess.standardOutput = newPipe
         newProcess.standardError = newPipe
 
-        // 赋值到状态变量，以便后续清理
         pipe = newPipe
         process = newProcess
 
@@ -158,17 +181,14 @@ struct ContentView: View {
         }
     }
 
-    /// 停止脚本并清理资源
     private func stopScript() {
         isRunning = false
         process?.terminate()
         process = nil
-        
-        // 取消读取 handler 并关闭管道
+
         pipe?.fileHandleForReading.readabilityHandler = nil
         pipe = nil
-        
-        // 可选：输出提示
+
         output += "\n[脚本已停止]\n"
     }
 }
