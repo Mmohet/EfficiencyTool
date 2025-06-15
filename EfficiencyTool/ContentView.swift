@@ -107,7 +107,7 @@ struct ContentView: View {
                 
 
             
-            .padding(.top)
+            .padding(.top, 8)
 
 
             // 运行/停止 按钮
@@ -117,20 +117,29 @@ struct ContentView: View {
             .padding(.vertical, 8)
 
             // 输出区域
+        GroupBox(label: Text("终端输出:")) {
             ScrollViewReader { proxy in
                 ScrollView {
                     Text(output)
                         .padding()
                         .font(.system(.body, design: .monospaced))
                         .id("end")
+                    Text("如果想取消效果则关闭脚本并退出生效的应用并重进即可，对于全局搜索则重启即可")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                        .opacity(0.8)
+                        .padding(.top, 8)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity, alignment: .top)
                 }
                 .onChange(of: output) { _ in
                     proxy.scrollTo("end", anchor: .bottom)
                 }
             }
-        
-        .padding()
-        .frame(minWidth: 450, minHeight: 300)
+            
+            .padding()
+            .frame(minWidth: 450, minHeight: 200)
+        }
     }
 
     private func startScript() {
