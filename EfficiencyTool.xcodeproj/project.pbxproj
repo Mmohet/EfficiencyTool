@@ -1,0 +1,782 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		2A13EE6A2DFE621F00D30033 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A13EE4E2DFE621E00D30033 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A13EE552DFE621E00D30033;
+			remoteInfo = EfficiencyTool;
+		};
+		2A13EE742DFE621F00D30033 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A13EE4E2DFE621E00D30033 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2A13EE552DFE621E00D30033;
+			remoteInfo = EfficiencyTool;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		2A13EE562DFE621E00D30033 /* EfficiencyTool.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EfficiencyTool.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A13EE692DFE621F00D30033 /* EfficiencyToolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EfficiencyToolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A13EE732DFE621F00D30033 /* EfficiencyToolUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EfficiencyToolUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A13EE9C2DFE678C00D30033 /* EfficencyToolTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EfficencyToolTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A13EEA62DFE678C00D30033 /* EfficencyToolUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EfficencyToolUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A13EEBA2DFE7A7F00D30033 /* EfficiencyTool.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EfficiencyTool.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2A13EEBC2DFE7FAF00D30033 /* Exceptions for "EfficiencyTool" folder in "EfficiencyTool" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2A13EE552DFE621E00D30033 /* EfficiencyTool */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		2A13EE582DFE621E00D30033 /* EfficiencyTool */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2A13EEBC2DFE7FAF00D30033 /* Exceptions for "EfficiencyTool" folder in "EfficiencyTool" target */,
+			);
+			path = EfficiencyTool;
+			sourceTree = "<group>";
+		};
+		2A13EE6C2DFE621F00D30033 /* EfficiencyToolTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EfficiencyToolTests;
+			sourceTree = "<group>";
+		};
+		2A13EE762DFE621F00D30033 /* EfficiencyToolUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EfficiencyToolUITests;
+			sourceTree = "<group>";
+		};
+		2A13EE8B2DFE678B00D30033 /* EfficencyTool */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EfficencyTool;
+			sourceTree = "<group>";
+		};
+		2A13EE9F2DFE678C00D30033 /* EfficencyToolTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EfficencyToolTests;
+			sourceTree = "<group>";
+		};
+		2A13EEA92DFE678C00D30033 /* EfficencyToolUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EfficencyToolUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2A13EE532DFE621E00D30033 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE662DFE621F00D30033 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE702DFE621F00D30033 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE992DFE678C00D30033 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EEA32DFE678C00D30033 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2A13EE4D2DFE621E00D30033 = {
+			isa = PBXGroup;
+			children = (
+				2A13EEBA2DFE7A7F00D30033 /* EfficiencyTool.entitlements */,
+				2A13EE582DFE621E00D30033 /* EfficiencyTool */,
+				2A13EE6C2DFE621F00D30033 /* EfficiencyToolTests */,
+				2A13EE762DFE621F00D30033 /* EfficiencyToolUITests */,
+				2A13EE8B2DFE678B00D30033 /* EfficencyTool */,
+				2A13EE9F2DFE678C00D30033 /* EfficencyToolTests */,
+				2A13EEA92DFE678C00D30033 /* EfficencyToolUITests */,
+				2A13EE572DFE621E00D30033 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2A13EE572DFE621E00D30033 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A13EE562DFE621E00D30033 /* EfficiencyTool.app */,
+				2A13EE692DFE621F00D30033 /* EfficiencyToolTests.xctest */,
+				2A13EE732DFE621F00D30033 /* EfficiencyToolUITests.xctest */,
+				2A13EE9C2DFE678C00D30033 /* EfficencyToolTests.xctest */,
+				2A13EEA62DFE678C00D30033 /* EfficencyToolUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2A13EE552DFE621E00D30033 /* EfficiencyTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A13EE7D2DFE621F00D30033 /* Build configuration list for PBXNativeTarget "EfficiencyTool" */;
+			buildPhases = (
+				2A13EE522DFE621E00D30033 /* Sources */,
+				2A13EE532DFE621E00D30033 /* Frameworks */,
+				2A13EE542DFE621E00D30033 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2A13EE582DFE621E00D30033 /* EfficiencyTool */,
+			);
+			name = EfficiencyTool;
+			packageProductDependencies = (
+			);
+			productName = EfficiencyTool;
+			productReference = 2A13EE562DFE621E00D30033 /* EfficiencyTool.app */;
+			productType = "com.apple.product-type.application";
+		};
+		2A13EE682DFE621F00D30033 /* EfficiencyToolTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A13EE802DFE621F00D30033 /* Build configuration list for PBXNativeTarget "EfficiencyToolTests" */;
+			buildPhases = (
+				2A13EE652DFE621F00D30033 /* Sources */,
+				2A13EE662DFE621F00D30033 /* Frameworks */,
+				2A13EE672DFE621F00D30033 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A13EE6B2DFE621F00D30033 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2A13EE6C2DFE621F00D30033 /* EfficiencyToolTests */,
+			);
+			name = EfficiencyToolTests;
+			packageProductDependencies = (
+			);
+			productName = EfficiencyToolTests;
+			productReference = 2A13EE692DFE621F00D30033 /* EfficiencyToolTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2A13EE722DFE621F00D30033 /* EfficiencyToolUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A13EE832DFE621F00D30033 /* Build configuration list for PBXNativeTarget "EfficiencyToolUITests" */;
+			buildPhases = (
+				2A13EE6F2DFE621F00D30033 /* Sources */,
+				2A13EE702DFE621F00D30033 /* Frameworks */,
+				2A13EE712DFE621F00D30033 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2A13EE752DFE621F00D30033 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				2A13EE762DFE621F00D30033 /* EfficiencyToolUITests */,
+			);
+			name = EfficiencyToolUITests;
+			packageProductDependencies = (
+			);
+			productName = EfficiencyToolUITests;
+			productReference = 2A13EE732DFE621F00D30033 /* EfficiencyToolUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		2A13EE9B2DFE678C00D30033 /* EfficencyToolTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A13EEB12DFE678D00D30033 /* Build configuration list for PBXNativeTarget "EfficencyToolTests" */;
+			buildPhases = (
+				2A13EE982DFE678C00D30033 /* Sources */,
+				2A13EE992DFE678C00D30033 /* Frameworks */,
+				2A13EE9A2DFE678C00D30033 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2A13EE9F2DFE678C00D30033 /* EfficencyToolTests */,
+			);
+			name = EfficencyToolTests;
+			packageProductDependencies = (
+			);
+			productName = EfficencyToolTests;
+			productReference = 2A13EE9C2DFE678C00D30033 /* EfficencyToolTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2A13EEA52DFE678C00D30033 /* EfficencyToolUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A13EEB42DFE678D00D30033 /* Build configuration list for PBXNativeTarget "EfficencyToolUITests" */;
+			buildPhases = (
+				2A13EEA22DFE678C00D30033 /* Sources */,
+				2A13EEA32DFE678C00D30033 /* Frameworks */,
+				2A13EEA42DFE678C00D30033 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				2A13EEA92DFE678C00D30033 /* EfficencyToolUITests */,
+			);
+			name = EfficencyToolUITests;
+			packageProductDependencies = (
+			);
+			productName = EfficencyToolUITests;
+			productReference = 2A13EEA62DFE678C00D30033 /* EfficencyToolUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2A13EE4E2DFE621E00D30033 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					2A13EE552DFE621E00D30033 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					2A13EE682DFE621F00D30033 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 2A13EE552DFE621E00D30033;
+					};
+					2A13EE722DFE621F00D30033 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 2A13EE552DFE621E00D30033;
+					};
+					2A13EE9B2DFE678C00D30033 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 2A13EE892DFE678B00D30033;
+					};
+					2A13EEA52DFE678C00D30033 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 2A13EE892DFE678B00D30033;
+					};
+				};
+			};
+			buildConfigurationList = 2A13EE512DFE621E00D30033 /* Build configuration list for PBXProject "EfficiencyTool" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2A13EE4D2DFE621E00D30033;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2A13EE572DFE621E00D30033 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2A13EE552DFE621E00D30033 /* EfficiencyTool */,
+				2A13EE682DFE621F00D30033 /* EfficiencyToolTests */,
+				2A13EE722DFE621F00D30033 /* EfficiencyToolUITests */,
+				2A13EE9B2DFE678C00D30033 /* EfficencyToolTests */,
+				2A13EEA52DFE678C00D30033 /* EfficencyToolUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2A13EE542DFE621E00D30033 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE672DFE621F00D30033 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE712DFE621F00D30033 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE9A2DFE678C00D30033 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EEA42DFE678C00D30033 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2A13EE522DFE621E00D30033 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE652DFE621F00D30033 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE6F2DFE621F00D30033 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EE982DFE678C00D30033 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2A13EEA22DFE678C00D30033 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2A13EE6B2DFE621F00D30033 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A13EE552DFE621E00D30033 /* EfficiencyTool */;
+			targetProxy = 2A13EE6A2DFE621F00D30033 /* PBXContainerItemProxy */;
+		};
+		2A13EE752DFE621F00D30033 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2A13EE552DFE621E00D30033 /* EfficiencyTool */;
+			targetProxy = 2A13EE742DFE621F00D30033 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2A13EE7B2DFE621F00D30033 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = EfficiencyTool.entitlements;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		2A13EE7C2DFE621F00D30033 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = EfficiencyTool.entitlements;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		2A13EE7E2DFE621F00D30033 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = EfficiencyTool/EfficiencyTool.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"EfficiencyTool/Preview Content\"";
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EfficiencyTool/Info.plist;
+				INFOPLIST_KEY_LSUIElement = NO;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficiencyTool;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2A13EE7F2DFE621F00D30033 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = EfficiencyTool/EfficiencyTool.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"EfficiencyTool/Preview Content\"";
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = EfficiencyTool/Info.plist;
+				INFOPLIST_KEY_LSUIElement = NO;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficiencyTool;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2A13EE812DFE621F00D30033 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficiencyToolTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EfficiencyTool.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EfficiencyTool";
+			};
+			name = Debug;
+		};
+		2A13EE822DFE621F00D30033 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficiencyToolTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EfficiencyTool.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EfficiencyTool";
+			};
+			name = Release;
+		};
+		2A13EE842DFE621F00D30033 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficiencyToolUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = EfficiencyTool;
+			};
+			name = Debug;
+		};
+		2A13EE852DFE621F00D30033 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficiencyToolUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = EfficiencyTool;
+			};
+			name = Release;
+		};
+		2A13EEB22DFE678D00D30033 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficencyToolTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EfficencyTool.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EfficencyTool";
+			};
+			name = Debug;
+		};
+		2A13EEB32DFE678D00D30033 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficencyToolTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EfficencyTool.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EfficencyTool";
+			};
+			name = Release;
+		};
+		2A13EEB52DFE678D00D30033 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficencyToolUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = EfficencyTool;
+			};
+			name = Debug;
+		};
+		2A13EEB62DFE678D00D30033 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 442C8S54A9;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Mohetqin.EfficencyToolUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = EfficencyTool;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2A13EE512DFE621E00D30033 /* Build configuration list for PBXProject "EfficiencyTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A13EE7B2DFE621F00D30033 /* Debug */,
+				2A13EE7C2DFE621F00D30033 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A13EE7D2DFE621F00D30033 /* Build configuration list for PBXNativeTarget "EfficiencyTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A13EE7E2DFE621F00D30033 /* Debug */,
+				2A13EE7F2DFE621F00D30033 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A13EE802DFE621F00D30033 /* Build configuration list for PBXNativeTarget "EfficiencyToolTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A13EE812DFE621F00D30033 /* Debug */,
+				2A13EE822DFE621F00D30033 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A13EE832DFE621F00D30033 /* Build configuration list for PBXNativeTarget "EfficiencyToolUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A13EE842DFE621F00D30033 /* Debug */,
+				2A13EE852DFE621F00D30033 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A13EEB12DFE678D00D30033 /* Build configuration list for PBXNativeTarget "EfficencyToolTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A13EEB22DFE678D00D30033 /* Debug */,
+				2A13EEB32DFE678D00D30033 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2A13EEB42DFE678D00D30033 /* Build configuration list for PBXNativeTarget "EfficencyToolUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A13EEB52DFE678D00D30033 /* Debug */,
+				2A13EEB62DFE678D00D30033 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2A13EE4E2DFE621E00D30033 /* Project object */;
+}
