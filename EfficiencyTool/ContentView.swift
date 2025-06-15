@@ -97,7 +97,7 @@ struct ContentView: View {
             
             
             GroupBox(label: Text("高级选项")) {
-                Toggle("使用替代进程抓取命令", isOn: $useAltPSCommand)
+                Toggle("使用全局搜索替代进程抓取命令", isOn: $useAltPSCommand)
                     .help(altPSWarning)
                     .padding()
                 
