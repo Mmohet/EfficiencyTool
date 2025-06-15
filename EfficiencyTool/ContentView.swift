@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var useAltPSCommand = false
+    private let altPSWarning = "⚠️ 启用此选项将完全替代默认的进程筛选命令，会将整个系统进程都放入小核, 建议仅在必要时使用。"
+    
     @State private var output = ""
     @State private var isRunning = false
     @State private var process: Process? = nil
@@ -34,10 +37,20 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-            }
+                
 
+            }
+            
+            
+                Toggle("使用替代进程抓取命令", isOn: $useAltPSCommand)
+                    .help(altPSWarning)
+                    .padding()
+                
+
+            
+            .padding(.top)
             // Minecraft 检测开关
-            Toggle("启用 Minecraft/Java 前后台检测", isOn: $enableFocusCheck)
+            Toggle("启用前台检测", isOn: $enableFocusCheck)
                 .padding(.bottom, 8)
 
             // 运行/停止 按钮
@@ -66,11 +79,18 @@ struct ContentView: View {
     private func startScript() {
         output = ""
 
-        // 构建 grep 模式字符串
-        let patterns = allPatterns
-            .filter { selectedPatterns[$0] == true }
-            .joined(separator: "|")
-
+        let psCommand: String
+        if useAltPSCommand {
+            psCommand = """
+ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
+"""
+        } else {
+            let patterns = allPatterns
+                .filter { selectedPatterns[$0] == true }
+                .joined(separator: "|")
+            psCommand = "ps aux | grep -E '\(patterns)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
+        }
+        
         // 生成脚本内容
         var script = """
         #!/bin/bash
@@ -84,7 +104,7 @@ struct ContentView: View {
            echo "[$timestamp]"
 
            # 主循环：根据选择的模式监控进程
-           for pid in $(ps aux | grep -E '\(patterns)' | grep -v grep | awk '{print $2}'); do
+           for pid in $(\(psCommand)); do
              if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                [[ $sleep_time -gt 200 ]] && sleep_time=$((sleep_time - 36))
                [[ $sleep_time -gt 90 ]]  && sleep_time=$((sleep_time - 9))
