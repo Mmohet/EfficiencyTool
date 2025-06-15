@@ -49,7 +49,7 @@ struct ContentView: View {
            timestamp=$(date "+%H:%M")
            echo "[$timestamp]"
 
-           for pid in $(ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'); do
+           for pid in $(ps aux | grep -E 'Renderer|Chrome|Edge|Reading|bilibili|Terminal|wine' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'); do
              # If PID is not in the list of assigned PIDs
              if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                if [[ $sleep_time -gt 200 ]]; then
