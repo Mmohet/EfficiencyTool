@@ -212,7 +212,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                   if [[ $sleep_time -gt 305 ]]; then
                     sleep_time=$((sleep_time - 17))
                   fi
-                  if [[ $sleep_time -gt 15 ]]; then
+                  if [[ $sleep_time -gt 10 ]]; then
                     sleep_time=$((sleep_time + 1))
                   fi
                   if [[ $sleep_time -gt 90 ]]; then
