@@ -1,6 +1,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("customPatterns") private var customPatternsString: String = ""
+    private func getCustomPatterns() -> [String] {
+        customPatternsString.isEmpty ? [] : customPatternsString.components(separatedBy: ",")
+    }
+
+    private func setCustomPatterns(_ patterns: [String]) {
+        customPatternsString = patterns.joined(separator: ",")
+    }
+
+    @State private var newCustomPattern: String = ""
+
     @State private var useAltPSCommand = false
     private let altPSWarning = "⚠️ 启用此选项将完全替代默认的进程筛选命令，会将整个系统进程都放入小核, 建议仅在必要时使用。"
     
@@ -25,9 +36,9 @@ struct ContentView: View {
     @State private var enableFocusCheck = false
 
     var body: some View {
-        VStack(spacing: 12) {
-            // 模式选择列表（macOS 不支持 EditButton）
-            GroupBox(label: Text("选择要监控的进程模式:")) {
+        HStack(alignment: .top, spacing: 16) {
+            // 默认模式列表
+            GroupBox(label: Text("监控进程模式 (默认):")) {
                 VStack(alignment: .leading) {
                     ForEach(allPatterns, id: \.self) { pattern in
                         Toggle(pattern, isOn: Binding(
@@ -37,21 +48,67 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                
-
+                .frame(width: 200, height: 200)
             }
+          
+            // 自定义模式列表
+            GroupBox(label: Text("监控进程模式 (自定义):")) {
+                VStack(spacing: 8) {
+                    HStack {
+                        TextField("新模式关键字", text: $newCustomPattern)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Button("添加") {
+                            let trimmed = newCustomPattern.trimmingCharacters(in: .whitespacesAndNewlines)
+                            var current = getCustomPatterns()
+                            guard !trimmed.isEmpty, !current.contains(trimmed) else { return }
+                            current.append(trimmed)
+                            setCustomPatterns(current)
+                            newCustomPattern = ""
+                        }
+                        .disabled(newCustomPattern.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    }
+                    Divider()
+                    ScrollView {
+                        VStack(alignment: .leading) {
+                            ForEach(getCustomPatterns(), id: \.self) { pattern in
+                                HStack {
+                                    Text(pattern)
+                                    Spacer()
+                                    Button(action: {
+                                        var current = getCustomPatterns()
+                                        current.removeAll { $0 == pattern }
+                                        setCustomPatterns(current)
+                                    }) {
+                                        Image(systemName: "minus.circle")
+                                    }
+                                    .buttonStyle(BorderlessButtonStyle())
+                                }
+                            }
+
+                        }
+                        .padding(.horizontal, 4)
+                    }
+                }
+                .padding()
+                .frame(width: 200, height: 200)
+            }
+        }
+        .padding()
             
             
+            GroupBox(label: Text("高级选项")) {
                 Toggle("使用替代进程抓取命令", isOn: $useAltPSCommand)
                     .help(altPSWarning)
                     .padding()
                 
+                Toggle("启用前台检测", isOn: $enableFocusCheck)
+                    .padding(.bottom, 8)
+            }
+                
 
             
             .padding(.top)
-            // Minecraft 检测开关
-            Toggle("启用前台检测", isOn: $enableFocusCheck)
-                .padding(.bottom, 8)
+
 
             // 运行/停止 按钮
             Button(isRunning ? "停止脚本" : "运行脚本") {
@@ -71,9 +128,9 @@ struct ContentView: View {
                     proxy.scrollTo("end", anchor: .bottom)
                 }
             }
-        }
+        
         .padding()
-        .frame(minWidth: 500, minHeight: 450)
+        .frame(minWidth: 450, minHeight: 300)
     }
 
     private func startScript() {
@@ -85,10 +142,12 @@ struct ContentView: View {
 ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
 """
         } else {
-            let patterns = allPatterns
+            let defaultPatterns = allPatterns
                 .filter { selectedPatterns[$0] == true }
+            let combined = defaultPatterns + getCustomPatterns()
+            let regex = combined
                 .joined(separator: "|")
-            psCommand = "ps aux | grep -E '\(patterns)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
+            psCommand = "ps aux | grep -E '\(regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
         
         // 生成脚本内容
