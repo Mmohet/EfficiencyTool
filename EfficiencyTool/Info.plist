@@ -4,5 +4,9 @@
 <dict>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
+	<key>LSBackgroundOnly</key>
+	<true/>
 </dict>
 </plist>

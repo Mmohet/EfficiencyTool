@@ -8,6 +8,7 @@ extension Notification.Name {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+    
     var window: NSWindow?
     
     @objc func updateMenuToggleText() {
@@ -29,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        
+
         // Setup status bar icon
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusItem.button?.image = NSImage(systemSymbolName: "speedometer", accessibilityDescription: nil)
@@ -86,7 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window?.contentView = NSHostingView(rootView: contentView)
             window?.delegate = self // 💡 Very important
         }
-
+        NSApp.setActivationPolicy(.regular)    // shows Dock icon
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -101,5 +102,6 @@ extension AppDelegate: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
         // This ensures window gets recreated properly next time
         self.window = nil
+        NSApp.setActivationPolicy(.accessory) // 👉 hide dock icon
     }
 }
