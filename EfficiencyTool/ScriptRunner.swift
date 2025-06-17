@@ -139,6 +139,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         do {
             try newProcess.run()
             config.isRunning = true
+            NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
         } catch {
             DispatchQueue.main.async {
                 self.config.output = "启动脚本失败：\(error)"
@@ -154,7 +155,11 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         config.pipe = nil
         config.isRunning = false
         DispatchQueue.main.async {
-            self.output += "\n[脚本已停止]\n"
+            self.config.output += "\n[脚本已停止]\n"
         }
+        NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
     }
+}
+extension Notification.Name {
+    static let scriptStateChanged = Notification.Name("scriptStateChanged")
 }

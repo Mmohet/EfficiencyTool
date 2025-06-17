@@ -3,14 +3,14 @@ import SwiftUI
 
 
 struct ContentView: View {
-    var output = ""
+    // var output = ""
 
 
-    @ObservedObject var configObj = AppStorageConfig.config
-    let config = AppStorageConfig.config
+    @ObservedObject private var config = AppStorageConfig.config
+    // let config = AppStorageConfig.config
 
-    @ObservedObject var runnerObj = ScriptRunner.shared
-    let runner = ScriptRunner.shared
+    @ObservedObject private var runner = ScriptRunner.shared
+    // let runner = ScriptRunner.shared
     
     
     
@@ -36,15 +36,15 @@ struct ContentView: View {
             GroupBox(label: Text("监控进程模式 (自定义):")) {
                 VStack(spacing: 8) {
                     HStack {
-                        TextField("新模式关键字", text: $configObj.newCustomPattern)
+                        TextField("新模式关键字", text: $config.newCustomPattern)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                         Button("添加") {
-                            let trimmed = configObj.newCustomPattern.trimmingCharacters(in: .whitespacesAndNewlines)
-                            var current = configObj.getCustomPatterns()
+                            let trimmed = config.newCustomPattern.trimmingCharacters(in: .whitespacesAndNewlines)
+                            var current = config.getCustomPatterns()
                             if !trimmed.isEmpty && !current.contains(trimmed) {
                                 current.append(trimmed)
-                                configObj.setCustomPatterns(current)
-                                configObj.newCustomPattern = ""
+                                config.setCustomPatterns(current)
+                                config.newCustomPattern = ""
                             }
                         }
                         .disabled(config.newCustomPattern.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -73,20 +73,20 @@ struct ContentView: View {
                 }
                 .padding()
                 .frame(width: 200, height: 200)
-                .onDisappear {
-                    runner.stop()
-                }
+//                .onDisappear {
+//                    runner.stop()
+//                }
             }
         }
         .padding()
             
             
             GroupBox(label: Text("高级选项")) {
-                Toggle("使用全局搜索替代进程抓取命令", isOn: $configObj.useAltPSCommand)
+                Toggle("使用全局搜索替代进程抓取命令", isOn: $config.useAltPSCommand)
                     .help(config.altPSWarning)
                     .padding()
                 
-                Toggle("启用前台检测", isOn: $configObj.enableFocusCheck)
+                Toggle("启用前台检测", isOn: $config.enableFocusCheck)
                     .padding(.bottom, 8)
             }
                 
@@ -97,15 +97,16 @@ struct ContentView: View {
 
             // 运行/停止 按钮
         Button(config.isRunning ? "停止脚本" : "运行脚本") {
-            config.isRunning ? runnerObj.stop() : runnerObj.start()
+            config.isRunning ? runner.stop() : runner.start()
+            // updateMenuToggleText()
+            NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
             }
             .padding(.vertical, 8)
             // 输出区域
         GroupBox(label: Text("终端输出:")) {
             ScrollViewReader { proxy in
                 ScrollView {
-                    Text(output +
-                         AppStorageConfig.config.output)
+                    Text(AppStorageConfig.config.output)
                         .padding()
                         .font(.system(.body, design: .monospaced))
                         .id("end")

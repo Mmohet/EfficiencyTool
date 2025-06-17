@@ -3,76 +3,73 @@ import AppKit
 import Cocoa
 
 extension Notification.Name {
-  static let startScript = Notification.Name("StartScriptNotification")
-  static let pauseScript = Notification.Name("PauseScriptNotification")
+    static let startScript = Notification.Name("StartScriptNotification")
+    static let pauseScript = Notification.Name("PauseScriptNotification")
 }
+
 class AppDelegate: NSObject, NSApplicationDelegate {
-        var window: NSWindow?
+    var window: NSWindow?
+    
+    @objc func updateMenuToggleText() {
+        toggleItem.title = config.isRunning ? "停止脚本" : "运行脚本"
+    }
+    
     @ObservedObject public var runner = ScriptRunner.shared
-    // @ObservedObject public var config = AppStorageConfig.config
     let config = AppStorageConfig.config
-
+    
     var statusItem: NSStatusItem!
-       var toggleItem: NSMenuItem!
+    var toggleItem: NSMenuItem!
+    func applicationSupportsSecureRestorableState() -> Bool {
+        return true
+    }
 
-       func applicationDidFinishLaunching(_ notification: Notification) {
-           statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-           statusItem.button?.image = NSImage(systemSymbolName: "speedometer", accessibilityDescription: nil)
+    func application(_ application: NSApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
+        return false
+    }
 
-           let menu = NSMenu()
+    
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        
+        // Setup status bar icon
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem.button?.image = NSImage(systemSymbolName: "speedometer", accessibilityDescription: nil)
 
-           // 单一切换项
-           toggleItem = NSMenuItem(title: "运行脚本", action: #selector(toggleScript), keyEquivalent: "S")
-           toggleItem.target = self
-           menu.addItem(toggleItem)
+        let menu = NSMenu()
+        toggleItem = NSMenuItem(title: "运行脚本", action: #selector(toggleScript), keyEquivalent: "S")
+        toggleItem.target = self
+        menu.addItem(toggleItem)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateMenuToggleText),
+            name: .scriptStateChanged,
+            object: nil
+        )
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "显示窗口", action: #selector(showWindow), keyEquivalent: "W"))
+        menu.addItem(.separator())
+        menu.addItem(NSMenuItem(title: "退出", action: #selector(quitApp), keyEquivalent: "Q"))
 
-           menu.addItem(.separator())
-           menu.addItem(.init(title: "显示窗口", action: #selector(showWindow), keyEquivalent: "W"))
-           menu.addItem(.separator())
-           menu.addItem(.init(title: "退出",    action: #selector(quitApp),     keyEquivalent: "Q"))
+        statusItem.menu = menu
 
-           statusItem.menu = menu
-       }
+    }
 
-       @objc private func toggleScript() {
-
-//           // 1. 从 UserDefaults 或 AppStorageConfig 里读出所有设置
-//           let defaults = UserDefaults.standard
-//
-//           // 自定义模式列表
-//           let custom = defaults.string(forKey: "customPatterns")?
-//                            .components(separatedBy: ",") ?? []
-//
-//           // 默认模式开关字典 （需你在界面保存到 UserDefaults）
-//           let defaultPrefs = defaults.dictionary(forKey: "selectedPatterns") as? [String: Bool] ?? [:]
-//           let defaultList = defaultPrefs.filter { $0.value }.map { $0.key }
-//
-//           // 两个布尔开关
-//           let useAlt = defaults.bool(forKey: "useAltPSCommand")
-//           let focus  = defaults.bool(forKey: "enableFocusCheck")
-
-           // 2. 构建快照配置
-//           let selfConfig = ScriptConfig(
-//               defaultPatterns:      defaultList,
-//               customPatterns:       custom,
-//               useAltPS:             useAlt,
-//               enableFocusCheck:     focus
-//           )
-
-           // 3. 调用 Runner 启动或停止
-           if !config.isRunning {
-               print (config.useAltPSCommand)
-               ScriptRunner.shared.start()
-               config.isRunning = true
-               toggleItem.title = "停止脚本"
-
-           } else {
-               print (config.useAltPSCommand)
-               ScriptRunner.shared.stop()
-               config.isRunning = false
-               toggleItem.title = "运行脚本"
-           }
-       }
+    @objc private func toggleScript() {
+        if !config.isRunning {
+            print("Starting script... useAltPS: \(config.useAltPSCommand)")
+            ScriptRunner.shared.start()
+            config.isRunning = true
+            updateMenuToggleText()
+            NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
+            // toggleItem.title = config.runScriptText
+        } else {
+            print("Stopping script... useAltPS: \(config.useAltPSCommand)")
+            ScriptRunner.shared.stop()
+            config.isRunning = false
+            updateMenuToggleText()
+            NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
+            // toggleItem.title = config.runScriptText
+        }
+    }
 
     @objc func showWindow() {
         if window == nil {
@@ -82,9 +79,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 styleMask: [.titled, .closable, .resizable],
                 backing: .buffered,
                 defer: false)
+            window?.identifier = nil
+            window?.isRestorable = false
+            window?.isReleasedWhenClosed = false
             window?.center()
             window?.contentView = NSHostingView(rootView: contentView)
+            window?.delegate = self // 💡 Very important
         }
+
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -92,5 +94,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func quitApp() {
         ScriptRunner.shared.stop()
         NSApplication.shared.terminate(nil)
+    }
+}
+
+extension AppDelegate: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        // This ensures window gets recreated properly next time
+        self.window = nil
     }
 }

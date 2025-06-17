@@ -29,6 +29,8 @@ class AppStorageConfig: ObservableObject {
     
     // Minecraft/Java 检测开关
     @Published public var enableFocusCheck: Bool = false
+    
+    @Published public var runScriptText: String = ""
     private init() {}
 }
 
