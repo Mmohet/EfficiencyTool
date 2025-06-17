@@ -1,32 +1,13 @@
-//
-//  EfficiencyToolApp.swift
-//  EfficiencyTool
-//
-//  Created by Cheng Zhang on 6/14/25.
-//
-
 import SwiftUI
-import SwiftData
+import AppKit
 
 @main
 struct EfficiencyToolApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    // @StateObject private var manager = ScriptManager()
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(sharedModelContainer)
+        // 隐藏默认窗口
+        Settings { EmptyView() }
     }
 }

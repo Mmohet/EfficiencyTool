@@ -61,21 +61,6 @@
 			path = EfficiencyToolUITests;
 			sourceTree = "<group>";
 		};
-		2A13EE8B2DFE678B00D30033 /* EfficencyTool */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = EfficencyTool;
-			sourceTree = "<group>";
-		};
-		2A13EE9F2DFE678C00D30033 /* EfficencyToolTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = EfficencyToolTests;
-			sourceTree = "<group>";
-		};
-		2A13EEA92DFE678C00D30033 /* EfficencyToolUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = EfficencyToolUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,9 +109,6 @@
 				2A13EE582DFE621E00D30033 /* EfficiencyTool */,
 				2A13EE6C2DFE621F00D30033 /* EfficiencyToolTests */,
 				2A13EE762DFE621F00D30033 /* EfficiencyToolUITests */,
-				2A13EE8B2DFE678B00D30033 /* EfficencyTool */,
-				2A13EE9F2DFE678C00D30033 /* EfficencyToolTests */,
-				2A13EEA92DFE678C00D30033 /* EfficencyToolUITests */,
 				2A13EE572DFE621E00D30033 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -226,9 +208,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				2A13EE9F2DFE678C00D30033 /* EfficencyToolTests */,
-			);
 			name = EfficencyToolTests;
 			packageProductDependencies = (
 			);
@@ -247,9 +226,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				2A13EEA92DFE678C00D30033 /* EfficencyToolUITests */,
 			);
 			name = EfficencyToolUITests;
 			packageProductDependencies = (
