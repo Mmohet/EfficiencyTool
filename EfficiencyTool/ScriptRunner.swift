@@ -14,6 +14,7 @@ public struct ScriptConfig {
 public class ScriptRunner: ObservableObject {
     public static let shared = ScriptRunner()
     @ObservedObject var config = AppStorageConfig.config
+    @ObservedObject private var pcorerunner = PcoreBalancer.shared
     @State public var output = ""
 
     /// 启动并传入当前配置
@@ -145,6 +146,9 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                 self.config.output = "启动脚本失败：\(error)"
             }
         }
+        if (config.enableBalanceCheck) {
+            pcorerunner.start()
+        }
      }
     /// 停止脚本
     public func stop() {
@@ -158,6 +162,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             self.config.output += "\n[脚本已停止]\n"
         }
         NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
+        pcorerunner.stop()
     }
 }
 extension Notification.Name {

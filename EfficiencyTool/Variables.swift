@@ -27,9 +27,10 @@ class AppStorageConfig: ObservableObject {
     @Published public var process: Process? = nil
     @Published public var pipe: Pipe? = nil
     
-    // Minecraft/Java 检测开关
+    // 前台 检测开关
     @Published public var enableFocusCheck: Bool = false
-    
+    @Published public var enableBalanceCheck: Bool = true
+
     @Published public var runScriptText: String = ""
     private init() {}
 }

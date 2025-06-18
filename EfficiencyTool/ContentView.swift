@@ -88,6 +88,8 @@ struct ContentView: View {
                 
                 Toggle("启用前台检测", isOn: $config.enableFocusCheck)
                     .padding(.bottom, 8)
+                Toggle("启用均衡模式", isOn: $config.enableBalanceCheck)
+                    .padding(.bottom, 8)
             }
                 
 
