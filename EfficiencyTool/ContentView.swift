@@ -17,12 +17,11 @@ struct ContentView: View {
     var newCustomPattern = ""
     
     var body: some View {
-        HStack(alignment: .top, spacing: 16) {
-            // 默认模式列表
-            GroupBox(label: Text("监控进程模式 (默认):")) {
-                Toggle("启用默认规则", isOn: $config.enableDefaultRules)
-                    .padding(.bottom, 8)
-            }
+        HStack(alignment: .top, spacing: 8) {
+//            // 默认模式列表
+//            GroupBox(label: Text("监控进程模式 (默认):")) {
+//
+//            }
           
             // 自定义模式列表
             GroupBox(label: Text("监控进程模式 (自定义):")) {
@@ -81,6 +80,8 @@ struct ContentView: View {
                 Toggle("启用前台检测", isOn: $config.enableFocusCheck)
                     .padding(.bottom, 8)
                 Toggle("启用均衡模式", isOn: $config.enableBalanceCheck)
+                    .padding(.bottom, 8)
+                Toggle("启用默认规则", isOn: $config.enableDefaultRules)
                     .padding(.bottom, 8)
             }
                 
