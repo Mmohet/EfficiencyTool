@@ -29,24 +29,24 @@ public class ScriptRunner: ObservableObject {
 ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
 """
         } else {
-            var regex = ""
+            // var regex = ""
             if (patterns == []) {
                 config.enableDefaultRules = true
             }
             if (config.enableDefaultRules) {
-                regex = config.defaultAtternsString
+                config.regex = config.defaultAtternsString
                 if (patterns != []) {
-                    regex += "|"
-                    regex +=  patterns
+                    config.regex += "|"
+                    config.regex +=  patterns
                         .joined(separator: "|")
                 }
-                print (regex)
+                print (config.regex)
             } else {
-                regex = patterns
+                config.regex = patterns
                     .joined(separator: "|")
             }
 
-            psCommand = "ps aux | grep -E '\(regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
+            psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
         
         var script = """

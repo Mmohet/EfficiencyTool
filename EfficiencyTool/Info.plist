@@ -7,6 +7,6 @@
 	<key>CFBundleIdentifier</key>
 	<string></string>
 	<key>LSBackgroundOnly</key>
-	<true/>
+	<false/>
 </dict>
 </plist>

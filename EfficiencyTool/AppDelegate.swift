@@ -51,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(title: "退出", action: #selector(quitApp), keyEquivalent: "Q"))
 
         statusItem.menu = menu
-
+        showWindow()
     }
 
     @objc private func toggleScript() {

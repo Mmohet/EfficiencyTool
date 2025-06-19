@@ -37,7 +37,7 @@ class AppStorageConfig: ObservableObject {
     
     @AppStorage("enableDefaultRules") public var enableDefaultRules: Bool = true
     @Published public var defaultAtternsString: String = "Renderer|bilibili|wine"
-
+    @Published public var regex: String = ""
     
     private init() {}
 }

@@ -18,8 +18,8 @@ public class PcoreBalancer: ObservableObject {
 ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
 """
         } else {
-            let regex = patterns.joined(separator: "|")
-            psCommand = "ps aux | grep -E '\(regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
+            // let regex = patterns.joined(separator: "|")
+            psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
 
         var script = """
