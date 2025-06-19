@@ -45,7 +45,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                         if [[ " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                         echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending back to efficiency cores"
                             taskpolicy -b -p $pid
-                            # assigned_pids-=($pid)
+                            assigned_pids=("${assigned_pids[@]/$pid}")
                         fi
                     fi
                     

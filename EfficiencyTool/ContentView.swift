@@ -18,19 +18,11 @@ struct ContentView: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-//            // 默认模式列表
-//            GroupBox(label: Text("监控进程模式 (默认):")) {
-//                VStack(alignment: .leading) {
-//                    ForEach(allPatterns, id: \.self) { pattern in
-//                        Toggle(pattern, isOn: Binding(
-//                            get: { selectedPatterns[pattern] ?? false },
-//                            set: { selectedPatterns[pattern] = $0 }
-//                        ))
-//                    }
-//                }
-//                .padding()
-//                .frame(width: 200, height: 200)
-//            }
+            // 默认模式列表
+            GroupBox(label: Text("监控进程模式 (默认):")) {
+                Toggle("启用默认规则", isOn: $config.enableDefaultRules)
+                    .padding(.bottom, 8)
+            }
           
             // 自定义模式列表
             GroupBox(label: Text("监控进程模式 (自定义):")) {

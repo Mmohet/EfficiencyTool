@@ -6,7 +6,7 @@ import SwiftUI
 /// 配置存储与管理
 class AppStorageConfig: ObservableObject {
     public static var config = AppStorageConfig()
-    @AppStorage("customPatterns") public var customPatternsString: String = "Renderer, Chrome, Edge, Reading, bilibili, Terminal, wine"
+    @AppStorage("customPatterns") public var customPatternsString: String = ""
     @Published var customPatterns: [String] = []
 
     func getCustomPatterns() -> [String] {
@@ -32,6 +32,13 @@ class AppStorageConfig: ObservableObject {
     @Published public var enableBalanceCheck: Bool = true
 
     @Published public var runScriptText: String = ""
+    
+    @Published public var isLowPowerModeEnabled: Bool = false
+    
+    @Published public var enableDefaultRules: Bool = true
+    @Published public var defaultAtternsString: String = "Renderer|bilibili|wine"
+
+    
     private init() {}
 }
 

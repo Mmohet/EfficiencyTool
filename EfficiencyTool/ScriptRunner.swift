@@ -29,8 +29,15 @@ public class ScriptRunner: ObservableObject {
 ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
 """
         } else {
-            let regex = patterns
-                .joined(separator: "|")
+            var regex = ""
+            if (config.enableDefaultRules) {
+                regex = config.defaultAtternsString + "|" + patterns
+                    .joined(separator: "|")
+            } else {
+                regex = patterns
+                    .joined(separator: "|")
+            }
+
             psCommand = "ps aux | grep -E '\(regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
         
