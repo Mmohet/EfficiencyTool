@@ -30,9 +30,17 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 """
         } else {
             var regex = ""
+            if (patterns == []) {
+                config.enableDefaultRules = true
+            }
             if (config.enableDefaultRules) {
-                regex = config.defaultAtternsString + "|" + patterns
-                    .joined(separator: "|")
+                regex = config.defaultAtternsString
+                if (patterns != []) {
+                    regex += "|"
+                    regex +=  patterns
+                        .joined(separator: "|")
+                }
+                print (regex)
             } else {
                 regex = patterns
                     .joined(separator: "|")
