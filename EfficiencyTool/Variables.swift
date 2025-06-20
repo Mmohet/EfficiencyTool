@@ -23,6 +23,9 @@ class AppStorageConfig: ObservableObject {
     public let altPSWarning = "⚠️ 启用此选项将完全替代默认的进程筛选命令，会将整个系统进程都放入小核, 建议仅在必要时使用。"
     
     @Published public var output: String = ""
+    @Published public var outputcount: Int = 0
+
+    
     @Published public var isRunning: Bool = false
     @Published public var process: Process? = nil
     @Published public var pipe: Pipe? = nil

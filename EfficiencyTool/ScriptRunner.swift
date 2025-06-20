@@ -149,6 +149,11 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                 [weak self] in
                 guard let self = self else { return }
                 self.config.output += str
+                config.outputcount += 1
+                if self.config.outputcount > 100 {
+                    self.config.output = ""
+                    self.config.outputcount = 0
+                }
             }
         }
 
