@@ -83,6 +83,8 @@ struct ContentView: View {
                     .padding(.bottom, 8)
                 Toggle("启用默认规则", isOn: $config.enableDefaultRules)
                     .padding(.bottom, 8)
+                Toggle("启用自定义大核模式", isOn: $config.enablePerformanceCore)
+                    .padding(.bottom, 8)
             }
                 
 

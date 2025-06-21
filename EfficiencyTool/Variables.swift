@@ -36,7 +36,7 @@ class AppStorageConfig: ObservableObject {
 
     @Published public var runScriptText: String = ""
     
-    @Published public var isLowPowerModeEnabled: Bool = false
+    @Published public var enablePerformanceCore: Bool = false
     
     @AppStorage("enableDefaultRules") public var enableDefaultRules: Bool = true
     @Published public var defaultAtternsString: String = "Renderer|bilibili|wine"

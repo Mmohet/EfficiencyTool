@@ -19,9 +19,20 @@ public class ScriptRunner: ObservableObject {
 
     /// 启动并传入当前配置
     public func start() {
-        print (config.useAltPSCommand)
+        // print (config.useAltPSCommand)
         config.output = ""
-
+        var taskpolicy = ""
+        var taskpolicyOutput = ""
+        if config.enablePerformanceCore {
+            config.enableBalanceCheck = false
+            config.enableDefaultRules = false
+            taskpolicy = "B"
+            taskpolicyOutput = "efficiency"
+        } else {
+            taskpolicy = "b"
+            taskpolicyOutput = "performance"
+        }
+        
         let patterns = config.getCustomPatterns()
         let psCommand: String
         if config.useAltPSCommand {
@@ -49,6 +60,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
         
+        
         var script = """
         #!/bin/bash
 
@@ -66,10 +78,10 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                [[ $sleep_time -gt 200 ]] && sleep_time=$((sleep_time - 46))
                [[ $sleep_time -gt 90 ]]  && sleep_time=$((sleep_time - 19))
                [[ $sleep_time -gt 15 ]]  && sleep_time=$((sleep_time - 3))
-               taskpolicy -b -p $pid
+               taskpolicy -\(taskpolicy) -p $pid
                full_path=$(ps -p $pid -o comm=)
                process_name=$(echo "$full_path" | sed -E 's#.*/([^/]*\\.app)/.*MacOS/##')
-               echo "Assigned '$process_name' (PID $pid) to efficiency cores"
+               echo "Assigned '$process_name' (PID $pid) to \(taskpolicyOutput) cores"
                assigned_pids+=($pid)
              fi
            done
