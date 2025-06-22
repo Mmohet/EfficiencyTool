@@ -27,10 +27,10 @@ public class ScriptRunner: ObservableObject {
             config.enableBalanceCheck = false
             config.enableDefaultRules = false
             taskpolicy = "B"
-            taskpolicyOutput = "efficiency"
+            taskpolicyOutput = "performance"
         } else {
             taskpolicy = "b"
-            taskpolicyOutput = "performance"
+            taskpolicyOutput = "efficiency"
         }
         
         let patterns = config.getCustomPatterns()
