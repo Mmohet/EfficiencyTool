@@ -9,6 +9,8 @@ public class PcoreBalancer: ObservableObject {
     @State public var output = ""
 
     public func start() {
+        print (config.BalanceThreshold)
+        print (config.CPUThreshold)
         config.output = ""
 
         let patterns = config.getCustomPatterns()
@@ -31,17 +33,17 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 
         while true; do
             CPU_USAGE=$(ps -A -o %cpu | awk 'NR>1 {s+=$1} END {printf "%.0f\\n", s/NR*100}')
-            if [[ $CPU_USAGE -gt 20 ]]; then
+            if [[ $CPU_USAGE -gt \(config.CPUThreshold) ]]; then
                 for pid in $(\(psCommand)); do
                     cpu_usage=$(ps -p $pid -o %cpu= | awk '{print $1}')
                     cpu_int=${cpu_usage%.*}
-                    if [[ $cpu_int -gt 70 ]]; then
+                    if [[ $cpu_int -gt \(config.BalanceThreshold) ]]; then
                         echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending to performance cores"
                         taskpolicy -B -p $pid
                        assigned_pids+=($pid)
                     fi
 
-                    if [[ $cpu_int -lt 70 ]]; then
+                    if [[ $cpu_int -lt \(config.BalanceThreshold) ]]; then
                         if [[ " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                         echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending back to efficiency cores"
                             taskpolicy -b -p $pid

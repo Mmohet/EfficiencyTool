@@ -17,6 +17,7 @@ struct ContentView: View {
     var newCustomPattern = ""
     
     var body: some View {
+
         HStack(alignment: .top, spacing: 8) {
 //            // 默认模式列表
 //            GroupBox(label: Text("监控进程模式 (默认):")) {
@@ -86,6 +87,16 @@ struct ContentView: View {
                 Toggle("启用自定义大核模式", isOn: $config.enablePerformanceCore)
                     .padding(.bottom, 8)
             }
+        GroupBox(label: Text("均衡选项")) {
+
+            TextField("CheckThreshold", text: $config.BalanceThreshold.self)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.bottom, 0)
+            TextField("SendThreshold", text: $config.CPUThreshold.self)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.bottom, 0)
+
+        }
                 
 
             

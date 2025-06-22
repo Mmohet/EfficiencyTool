@@ -33,6 +33,8 @@ class AppStorageConfig: ObservableObject {
     // 前台 检测开关
     @Published public var enableFocusCheck: Bool = false
     @Published public var enableBalanceCheck: Bool = true
+    @Published public var CPUThreshold: String = "30"
+    @Published public var BalanceThreshold: String = "100"
 
     @Published public var runScriptText: String = ""
     
