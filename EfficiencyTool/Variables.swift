@@ -27,14 +27,15 @@ class AppStorageConfig: ObservableObject {
 
     
     @Published public var isRunning: Bool = false
-    @Published public var process: Process? = nil
-    @Published public var pipe: Pipe? = nil
+//    @Published public var process: Process? = nil
+//    @Published public var pipe: Pipe? = nil
     
     // 前台 检测开关
     @Published public var enableFocusCheck: Bool = false
     @Published public var enableBalanceCheck: Bool = true
-    @Published public var CPUThreshold: String = "30"
+    @Published public var CPUThreshold: String = "20"
     @Published public var BalanceThreshold: String = "100"
+    
 
     @Published public var runScriptText: String = ""
     

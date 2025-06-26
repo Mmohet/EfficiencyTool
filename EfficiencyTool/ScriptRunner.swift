@@ -15,7 +15,10 @@ public class ScriptRunner: ObservableObject {
     public static let shared = ScriptRunner()
     @ObservedObject var config = AppStorageConfig.config
     @ObservedObject private var pcorerunner = PcoreBalancer.shared
+    @ObservedObject private var Stoper = StopScript.shared
     @State public var output = ""
+    public var process: Process? = nil
+    public var pipe: Pipe? = nil
 
     /// 启动并传入当前配置
     public func start() {
@@ -83,13 +86,13 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                process_name=$(echo "$full_path" | sed -E 's#.*/([^/]*\\.app)/.*MacOS/##')
                echo "Assigned '$process_name' (PID $pid) to \(taskpolicyOutput) cores"
                assigned_pids+=($pid)
+               echo assigned_pids
              fi
            done
-
         """
 
 
-        // 如果启用了 Minecraft 检测，追加相关逻辑
+        // 如果启用了 前台 检测，追加相关逻辑
         if config.enableFocusCheck {
             script += """
            front_pid=$(osascript -e 'tell application "System Events" to get unix id of first process whose frontmost is true')
@@ -150,8 +153,8 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         newProcess.standardOutput = newPipe
         newProcess.standardError = newPipe
 
-        config.pipe = newPipe
-        config.process = newProcess
+        pipe = newPipe
+        process = newProcess
 
         // 实时读取输出
         newPipe.fileHandleForReading.readabilityHandler = { handle in
@@ -185,18 +188,35 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
     /// 停止脚本
     public func stop() {
         guard config.isRunning else { return }
-        config.process?.terminate()
-        config.process = nil
-        config.pipe?.fileHandleForReading.readabilityHandler = nil
-        config.pipe = nil
+        process?.terminate()
+        process = nil
+        pipe?.fileHandleForReading.readabilityHandler = nil
+        pipe = nil
         config.isRunning = false
         DispatchQueue.main.async {
             self.config.output += "\n[脚本已停止]\n"
         }
         NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
         pcorerunner.stop()
+        Stoper.start()
+
     }
+
+//    
+//    func performDelayedAction() async {
+//        print("Action started.")
+//        do {
+//            // Sleep for 2 seconds
+//            try await Task.sleep(nanoseconds: 10_000_000_000)
+//            print("Action completed after delay.")
+//        } catch {
+//            print("Action cancelled or an error occurred: \(error.localizedDescription)")
+//        }
+//    }
+    
+
 }
+
 extension Notification.Name {
     static let scriptStateChanged = Notification.Name("scriptStateChanged")
 }

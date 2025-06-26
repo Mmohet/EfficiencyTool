@@ -17,6 +17,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @ObservedObject public var runner = ScriptRunner.shared
     let config = AppStorageConfig.config
+
     
     var statusItem: NSStatusItem!
     var toggleItem: NSMenuItem!

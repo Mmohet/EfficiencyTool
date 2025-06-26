@@ -7,7 +7,9 @@ public class PcoreBalancer: ObservableObject {
     public static let shared = PcoreBalancer()
     @ObservedObject var config = AppStorageConfig.config
     @State public var output = ""
-
+    public var process: Process? = nil
+    public var pipe: Pipe? = nil
+    
     public func start() {
         print (config.BalanceThreshold)
         print (config.CPUThreshold)
@@ -24,10 +26,11 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
 
-        var script = """
+        let script = """
         #!/bin/bash
         
         assigned_pids=()
+        assigned_epids=()
         taskpolicy -b -p $$
         echo "sent $$ bash"
 
@@ -35,6 +38,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             CPU_USAGE=$(ps -A -o %cpu | awk 'NR>1 {s+=$1} END {printf "%.0f\\n", s/NR*100}')
             if [[ $CPU_USAGE -gt \(config.CPUThreshold) ]]; then
                 for pid in $(\(psCommand)); do
+                  if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                     cpu_usage=$(ps -p $pid -o %cpu= | awk '{print $1}')
                     cpu_int=${cpu_usage%.*}
                     if [[ $cpu_int -gt \(config.BalanceThreshold) ]]; then
@@ -42,10 +46,11 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                         taskpolicy -B -p $pid
                        assigned_pids+=($pid)
                     fi
+                  fi
 
                     if [[ $cpu_int -lt \(config.BalanceThreshold) ]]; then
                         if [[ " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
-                        echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending back to efficiency cores"
+                            echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending back to efficiency cores"
                             taskpolicy -b -p $pid
                             assigned_pids=("${assigned_pids[@]/$pid}")
                         fi
@@ -56,7 +61,13 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             sleep 1
         done
         """
-
+//        if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
+//            if [[ ! " ${assigned_epids[@]} " =~ " ${pid} " ]]; then
+//                echo "[E-ASSIGN] PID $pid using ${cpu_usage}% CPU — sending back to efficiency cores"
+//                taskpolicy -b -p $pid
+//                assigned_epids+=($pid)
+//            fi
+//        fi
         let newPipe = Pipe()
         let newProcess = Process()
         newProcess.executableURL = URL(fileURLWithPath: "/bin/bash")
@@ -64,8 +75,8 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         newProcess.standardOutput = newPipe
         newProcess.standardError = newPipe
 
-        config.pipe = newPipe
-        config.process = newProcess
+        pipe = newPipe
+        process = newProcess
 
         newPipe.fileHandleForReading.readabilityHandler = { handle in
             let data = handle.availableData
@@ -79,7 +90,6 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 
         do {
             try newProcess.run()
-            config.isRunning = true
             NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
         } catch {
             DispatchQueue.main.async {
@@ -89,12 +99,10 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
     }
 
     public func stop() {
-        guard config.isRunning else { return }
-        config.process?.terminate()
-        config.process = nil
-        config.pipe?.fileHandleForReading.readabilityHandler = nil
-        config.pipe = nil
-        config.isRunning = false
+        process?.terminate()
+        process = nil
+        pipe?.fileHandleForReading.readabilityHandler = nil
+        pipe = nil
         DispatchQueue.main.async {
             self.config.output += "\n[脚本已停止]\n"
         }

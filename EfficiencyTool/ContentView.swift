@@ -106,6 +106,7 @@ struct ContentView: View {
             // 运行/停止 按钮
         Button(config.isRunning ? "停止脚本" : "运行脚本") {
             config.isRunning ? runner.stop() : runner.start()
+
             // updateMenuToggleText()
             NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
             }
