@@ -1,0 +1,17 @@
+"customize_rules" = "Monitor process mode (custom)";
+"new_rule" = "Customized keyword";
+"add" = "Add";
+"advanced_setting" = "Advanced options";
+"global_search" = "Use global search instead of process grabbing command";
+"use_focus_check" = "Enable foreground(focus) detection";
+"use_balance_mode" = "Enable balanced mode";
+"use_default_rules" = "Enable default rules";
+"reverse_performance_core" = "Enable custom performance core mode";
+"balance_settings" = "Balance options";
+"check_threshold" = "Check threshold"
+"send_threshold" = "Send threshold";
+"stop_script" = "Stop script";
+"run_script" = "Run script";
+"console_output" = "Terminal output:";
+"end_script_help" = "If you want to close the script, stop the script, exit the application and re-launch it. For global search, just restart";
+"show_window" = "Show window";

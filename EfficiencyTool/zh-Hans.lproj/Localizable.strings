@@ -1,0 +1,17 @@
+"customize_rules" = "监控进程模式 (自定义)";
+"new_rule" = "自定义关键字";
+"add" = "添加";
+"advanced_setting" = "高级选项";
+"global_search" = "使用全局搜索替代进程抓取命令";
+"use_focus_check" = "启用前台检测";
+"use_balance_mode" = "启用均衡模式";
+"use_default_rules" = "启用默认规则";
+"reverse_performance_core" = "启用自定义大核模式";
+"balance_settings" = "均衡选项";
+"check_threshold" = "检测阈值"
+"send_threshold" = "生效阈值";
+"stop_script" = "停止脚本";
+"run_script" = "运行脚本";
+"console_output" = "终端输出:";
+"end_script_help" = "如果想取消效果则关闭脚本并退出生效的应用并重进即可，对于全局搜索则重启即可";
+"show_window" = "显示窗口";
