@@ -1,4 +1,6 @@
 import AppKit
+
+// UN-USED
 class CustomStatusButton: NSStatusBarButton {
     var onRightClick: (() -> Void)?
 

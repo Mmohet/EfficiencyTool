@@ -3,29 +3,40 @@ import Foundation
 import Combine
 import SwiftUI
 
+
+// Balance mode
 public class PcoreBalancer: ObservableObject {
+    // ----
     public static let shared = PcoreBalancer()
     @ObservedObject var config = AppStorageConfig.config
     @State public var output = ""
     public var process: Process? = nil
     public var pipe: Pipe? = nil
+    // ----Set up
     
+    
+    // -- Starting script
     public func start() {
-        print (config.BalanceThreshold)
-        print (config.CPUThreshold)
+        // Putting script text into scripts
+//        print (config.BalanceThreshold)
+//        print (config.CPUThreshold)
         config.output = ""
-
+        
+        
         let patterns = config.getCustomPatterns()
         let psCommand: String
-        if config.useAltPSCommand {
+        if config.useAltPSCommand { // use global search
             psCommand = """
 ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
 """
         } else {
-            // let regex = patterns.joined(separator: "|")
+            // let regex = patterns.joined(separator: "|") // Normal search
             psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
 
+        
+        
+        // Script part
         let script = """
         #!/bin/bash
         
@@ -37,6 +48,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         while true; do
             CPU_USAGE=$(ps -A -o %cpu | awk 'NR>1 {s+=$1} END {printf "%.0f\\n", s/NR*100}')
             if [[ $CPU_USAGE -gt \(config.CPUThreshold) ]]; then
+                # echo ${CPU_USAGE}
                 for pid in $(\(psCommand)); do
                   if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                     cpu_usage=$(ps -p $pid -o %cpu= | awk '{print $1}')
@@ -68,6 +80,8 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 //                assigned_epids+=($pid)
 //            fi
 //        fi
+        
+        // Creating pipe line
         let newPipe = Pipe()
         let newProcess = Process()
         newProcess.executableURL = URL(fileURLWithPath: "/bin/bash")
@@ -97,7 +111,9 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             }
         }
     }
-
+    
+    
+    // Stop part
     public func stop() {
         process?.terminate()
         process = nil

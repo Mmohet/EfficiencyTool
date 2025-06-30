@@ -5,12 +5,14 @@ import SwiftUI
 struct ContentView: View {
     // var output = ""
 
-
+    // variable file stroed in Variables
     @ObservedObject private var config = AppStorageConfig.config
-    // let config = AppStorageConfig.config
 
+    // script file, everytime toogle this to run/stop script
     @ObservedObject private var runner = ScriptRunner.shared
-    // let runner = ScriptRunner.shared
+    
+    // language file, store all text(String) file
+    @ObservedObject private var language = Language.config
     
     
     
@@ -25,12 +27,12 @@ struct ContentView: View {
 //            }
           
             // 自定义模式列表
-            GroupBox(label: Text("监控进程模式 (自定义):")) {
+            GroupBox(label: Text(language.customize_rules)) {
                 VStack(spacing: 8) {
                     HStack {
-                        TextField("新模式关键字", text: $config.newCustomPattern)
+                        TextField(language.new_rule, text: $config.newCustomPattern)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
-                        Button("添加") {
+                        Button(language.add) {
                             let trimmed = config.newCustomPattern.trimmingCharacters(in: .whitespacesAndNewlines)
                             var current = config.getCustomPatterns()
                             if !trimmed.isEmpty && !current.contains(trimmed) {
@@ -73,26 +75,26 @@ struct ContentView: View {
         .padding()
             
             
-            GroupBox(label: Text("高级选项")) {
-                Toggle("使用全局搜索替代进程抓取命令", isOn: $config.useAltPSCommand)
+        GroupBox(label: Text(language.advanced_setting)) {
+            Toggle(language.global_search, isOn: $config.useAltPSCommand)
                     .help(config.altPSWarning)
                     .padding()
                 
-                Toggle("启用前台检测", isOn: $config.enableFocusCheck)
+            Toggle(language.use_focus_check, isOn: $config.enableFocusCheck)
                     .padding(.bottom, 8)
-                Toggle("启用均衡模式", isOn: $config.enableBalanceCheck)
+            Toggle(language.use_balance_mode, isOn: $config.enableBalanceCheck)
                     .padding(.bottom, 8)
-                Toggle("启用默认规则", isOn: $config.enableDefaultRules)
+            Toggle(language.use_default_rules, isOn: $config.enableDefaultRules)
                     .padding(.bottom, 8)
-                Toggle("启用自定义大核模式", isOn: $config.enablePerformanceCore)
+            Toggle(language.reverse_performance_core, isOn: $config.enablePerformanceCore)
                     .padding(.bottom, 8)
             }
-        GroupBox(label: Text("均衡选项")) {
+        GroupBox(label: Text(language.balance_settings)) {
 
-            TextField("CheckThreshold", text: $config.BalanceThreshold.self)
+            TextField(language.check_threshold, text: $config.BalanceThreshold.self)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.bottom, 0)
-            TextField("SendThreshold", text: $config.CPUThreshold.self)
+            TextField(language.send_threshold, text: $config.CPUThreshold.self)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.bottom, 0)
 
@@ -104,7 +106,7 @@ struct ContentView: View {
 
 
             // 运行/停止 按钮
-        Button(config.isRunning ? "停止脚本" : "运行脚本") {
+        Button(config.isRunning ? language.stop_script : language.run_script) {
             config.isRunning ? runner.stop() : runner.start()
 
             // updateMenuToggleText()
@@ -112,14 +114,14 @@ struct ContentView: View {
             }
             .padding(.vertical, 8)
             // 输出区域
-        GroupBox(label: Text("终端输出:")) {
+        GroupBox(label: Text(language.console_output)) {
             ScrollViewReader { proxy in
                 ScrollView {
                     Text(AppStorageConfig.config.output)
                         .padding()
                         .font(.system(.body, design: .monospaced))
                         .id("end")
-                    Text("如果想取消效果则关闭脚本并退出生效的应用并重进即可，对于全局搜索则重启即可")
+                    Text(language.end_script_help)
                         .font(.footnote)
                         .foregroundColor(.gray)
                         .opacity(0.8)

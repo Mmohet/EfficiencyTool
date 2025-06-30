@@ -9,14 +9,16 @@ extension Notification.Name {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     
+    
     var window: NSWindow?
     
     @objc func updateMenuToggleText() {
-        toggleItem.title = config.isRunning ? "停止脚本" : "运行脚本"
+        toggleItem.title = config.isRunning ? language.stop_script : language.run_script
     }
     
     @ObservedObject public var runner = ScriptRunner.shared
     let config = AppStorageConfig.config
+    @ObservedObject private var language = Language.config
 
     
     var statusItem: NSStatusItem!
@@ -37,7 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = NSImage(systemSymbolName: "speedometer", accessibilityDescription: nil)
 
         let menu = NSMenu()
-        toggleItem = NSMenuItem(title: "运行脚本", action: #selector(toggleScript), keyEquivalent: "S")
+        toggleItem = NSMenuItem(title: language.run_script, action: #selector(toggleScript), keyEquivalent: "S")
         toggleItem.target = self
         menu.addItem(toggleItem)
         NotificationCenter.default.addObserver(
@@ -47,9 +49,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "显示窗口", action: #selector(showWindow), keyEquivalent: "W"))
+        menu.addItem(NSMenuItem(title: language.show_window, action: #selector(showWindow), keyEquivalent: "W"))
         menu.addItem(.separator())
-        menu.addItem(NSMenuItem(title: "退出", action: #selector(quitApp), keyEquivalent: "Q"))
+        menu.addItem(NSMenuItem(title: language.quit, action: #selector(quitApp), keyEquivalent: "Q"))
 
         statusItem.menu = menu
         showWindow()

@@ -11,6 +11,8 @@ public struct ScriptConfig {
     let enableFocusCheck: Bool
 }
 
+
+// Main script part
 public class ScriptRunner: ObservableObject {
     public static let shared = ScriptRunner()
     @ObservedObject var config = AppStorageConfig.config
@@ -26,8 +28,8 @@ public class ScriptRunner: ObservableObject {
         config.output = ""
         var taskpolicy = ""
         var taskpolicyOutput = ""
-        if config.enablePerformanceCore {
-            config.enableBalanceCheck = false
+        if config.enablePerformanceCore { // checking for performanceCore setting
+            config.enableBalanceCheck = false // disable both balanceCheck and defaultRules (Useless in performance mode)
             config.enableDefaultRules = false
             taskpolicy = "B"
             taskpolicyOutput = "performance"
@@ -38,23 +40,23 @@ public class ScriptRunner: ObservableObject {
         
         let patterns = config.getCustomPatterns()
         let psCommand: String
-        if config.useAltPSCommand {
+        if config.useAltPSCommand { // if global search
             psCommand = """
 ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^_/{ print $2 }'
 """
         } else {
             // var regex = ""
-            if (patterns == []) {
+            if (patterns == []) { // enable defaultrules if no custome rules added
                 config.enableDefaultRules = true
             }
-            if (config.enableDefaultRules) {
+            if (config.enableDefaultRules) { // if defaultrules and custom both exist
                 config.regex = config.defaultAtternsString
                 if (patterns != []) {
                     config.regex += "|"
                     config.regex +=  patterns
                         .joined(separator: "|")
                 }
-                print (config.regex)
+                // print (config.regex)
             } else {
                 config.regex = patterns
                     .joined(separator: "|")
@@ -64,6 +66,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         }
         
         
+        // puttting script
         var script = """
         #!/bin/bash
 

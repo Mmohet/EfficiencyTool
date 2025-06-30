@@ -3,6 +3,8 @@ import Foundation
 import Combine
 import SwiftUI
 
+
+// in stop script, send all process back, same logic
 public class StopScript: ObservableObject {
     public static let shared = StopScript()
     @ObservedObject var config = AppStorageConfig.config
