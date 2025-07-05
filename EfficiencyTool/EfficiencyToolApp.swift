@@ -10,8 +10,11 @@ struct EfficiencyToolApp: App {
     init() {
         let pre = Locale.preferredLanguages[0]
         // print(pre)
-        if (pre == "en-US") {language.setEnglish()}
-        if (pre == "zh-CN"||pre == "zh-Hans") {language.setChinese()}
+        if pre.hasPrefix("en") {
+            language.setEnglish()
+        } else if pre.hasPrefix("zh") {
+            language.setChinese()
+        }
     }
     var body: some Scene {
         // 隐藏默认窗口
