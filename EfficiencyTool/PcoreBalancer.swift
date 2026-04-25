@@ -23,7 +23,7 @@ public class PcoreBalancer: ObservableObject {
         config.output = ""
         
         
-        let patterns = config.getCustomPatterns()
+        // let patterns = config.getCustomPatterns()
         let psCommand: String
         if config.useAltPSCommand { // use global search
             psCommand = """
@@ -34,18 +34,26 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
             psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
 
-        
+        var DPP : String
+        if (config.isDetectingPower) {
+            DPP = "1"
+        } else {
+            DPP = "0"
+        }
         
         // Script part
         let script = """
         #!/bin/bash
         
+        
+        D_P=\(DPP)
         assigned_pids=()
         assigned_epids=()
         taskpolicy -b -p $$
         echo "sent $$ bash"
 
         while true; do
+         if [[ $(pmset -g batt | grep 'AC Power' >/dev/null && printf "Power Adapter\n" || printf "Battery\n") == "Battery" || $D_P == "0" ]]; then
             CPU_USAGE=$(ps -A -o %cpu | awk 'NR>1 {s+=$1} END {printf "%.0f\\n", s/NR*100}')
             if [[ $CPU_USAGE -gt \(config.CPUThreshold) ]]; then
                 # echo ${CPU_USAGE}
@@ -56,10 +64,10 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                     if [[ $cpu_int -gt \(config.BalanceThreshold) ]]; then
                         echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending to performance cores"
                         taskpolicy -B -p $pid
-                       assigned_pids+=($pid)
+                        assigned_pids+=($pid)
+                        sleep 0.1
                     fi
                   fi
-
                     if [[ $cpu_int -lt \(config.BalanceThreshold) ]]; then
                         if [[ " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
                             echo "[REASSIGN] PID $pid using ${cpu_usage}% CPU — sending back to efficiency cores"
@@ -70,7 +78,8 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                     
                 done
             fi
-            sleep 1
+          fi
+            sleep 0.5
         done
         """
 //        if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
@@ -99,6 +108,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                 [weak self] in
                 guard let self = self else { return }
                 self.config.output += str
+                self.config.parseAndUpdateProcesses(from: str)
             }
         }
 

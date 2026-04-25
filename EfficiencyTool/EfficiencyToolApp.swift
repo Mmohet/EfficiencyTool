@@ -9,9 +9,11 @@ struct EfficiencyToolApp: App {
     // Setting up languages
     init() {
         let pre = Locale.preferredLanguages[0]
-        // print(pre)
+
         if pre.hasPrefix("en") {
             language.setEnglish()
+        } else if pre.hasPrefix("yue") {
+            language.setChinese()
         } else if pre.hasPrefix("zh") {
             language.setChinese()
         }

@@ -79,16 +79,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if window == nil {
             let contentView = ContentView()
             window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 700, height: 700),
-                styleMask: [.titled, .closable, .resizable],
+                contentRect: NSRect(x: 0, y: 0, width: 560, height: 680),
+                styleMask: [.titled, .closable, .resizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false)
             window?.identifier = nil
             window?.isRestorable = false
             window?.isReleasedWhenClosed = false
+            window?.titlebarAppearsTransparent = true
+            window?.titleVisibility = .hidden
+            window?.isMovableByWindowBackground = true
+            window?.appearance = NSAppearance(named: .darkAqua)
             window?.center()
             window?.contentView = NSHostingView(rootView: contentView)
-            window?.delegate = self // 💡 Very important
+            window?.delegate = self
         }
         NSApp.setActivationPolicy(.regular)    // shows Dock icon
         window?.makeKeyAndOrderFront(nil)

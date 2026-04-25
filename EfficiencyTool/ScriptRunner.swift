@@ -24,8 +24,8 @@ public class ScriptRunner: ObservableObject {
 
     /// 启动并传入当前配置
     public func start() {
-        // print (config.useAltPSCommand)
         config.output = ""
+        config.clearProcesses()
         var taskpolicy = ""
         var taskpolicyOutput = ""
         if config.enablePerformanceCore { // checking for performanceCore setting
@@ -64,7 +64,12 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 
             psCommand = "ps aux | grep -E '\(config.regex)' | grep -v grep | grep -v GPU | grep -v server | awk '{print $2}'"
         }
-        
+        var DP : String
+        if (config.isDetectingPower) {
+            DP = "1"
+        } else {
+            DP = "0"
+        }
         
         // puttting script
         var script = """
@@ -72,12 +77,13 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
 
         assigned_pids=()
         sleep_time=50
+        D_P=\(DP)
         taskpolicy -b -p $$
         echo "sent $$ bash"
         while true; do
+         if [[ $(pmset -g batt | grep 'AC Power' >/dev/null && printf "Power Adapter\n" || printf "Battery\n") == "Battery" || $D_P == "0" ]]; then
            timestamp=$(date "+%H:%M")
            echo "[$timestamp]"
-
            # 主循环：根据选择的模式监控进程
            for pid in $(\(psCommand)); do
              if [[ ! " ${assigned_pids[@]} " =~ " ${pid} " ]]; then
@@ -144,6 +150,8 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
            echo "Current sleep time: $sleep_time seconds"
            echo -e "\\n\\n"
            sleep $sleep_time
+          fi
+          sleep 3
         done
         """
 
@@ -167,6 +175,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
                 [weak self] in
                 guard let self = self else { return }
                 self.config.output += str
+                self.config.parseAndUpdateProcesses(from: str)
                 config.outputcount += 1
                 if self.config.outputcount > 100 {
                     self.config.output = ""
@@ -178,6 +187,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         do {
             try newProcess.run()
             config.isRunning = true
+            config.scriptPhase = .starting
             NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
         } catch {
             DispatchQueue.main.async {
@@ -198,6 +208,7 @@ ps aux | grep -v grep | grep -v GPU | awk '$1!="root" && $1!="Apple" && $1 !~ /^
         config.isRunning = false
         DispatchQueue.main.async {
             self.config.output += "\n[脚本已停止]\n"
+            self.config.clearProcesses()
         }
         NotificationCenter.default.post(name: .scriptStateChanged, object: nil)
         pcorerunner.stop()
