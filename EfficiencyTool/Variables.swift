@@ -81,6 +81,9 @@ class AppStorageConfig: ObservableObject {
     @Published public var CPUThreshold: String = "20"
     @Published public var BalanceThreshold: String = "100"
 
+    @Published public var enableFPSCheck: Bool = false
+    @Published public var fpsVarianceThreshold: String = "2"
+
     @Published public var runScriptText: String = ""
     @Published public var enablePerformanceCore: Bool = false
 

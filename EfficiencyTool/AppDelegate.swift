@@ -79,7 +79,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if window == nil {
             let contentView = ContentView()
             window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 560, height: 680),
+                contentRect: NSRect(x: 0, y: 0, width: 640, height: 760),
                 styleMask: [.titled, .closable, .resizable, .fullSizeContentView],
                 backing: .buffered,
                 defer: false)
@@ -89,7 +89,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window?.titlebarAppearsTransparent = true
             window?.titleVisibility = .hidden
             window?.isMovableByWindowBackground = true
-            window?.appearance = NSAppearance(named: .darkAqua)
+            window?.minSize = NSSize(width: 600, height: 700)
             window?.center()
             window?.contentView = NSHostingView(rootView: contentView)
             window?.delegate = self

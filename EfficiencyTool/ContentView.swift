@@ -25,42 +25,52 @@ struct VisualEffectView: NSViewRepresentable {
 private struct PhaseIndicatorView: View {
     let phase: ScriptPhase
     let countdown: Int
+    @ObservedObject private var language = Language.config
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: 4) {
             phaseIcon
             phaseLabel
         }
-        .font(.caption2)
+        .font(.caption)
         .foregroundStyle(.secondary)
-        .padding(.horizontal, 7)
-        .padding(.vertical, 3)
-        .background(.secondary.opacity(0.1), in: Capsule())
-        .animation(.easeInOut(duration: 0.2), value: phase.isBusy)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
+        .background(.quaternary, in: Capsule())
+        .overlay(Capsule().stroke(.quaternary, lineWidth: 0.5))
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: phase.isBusy)
     }
 
     @ViewBuilder private var phaseIcon: some View {
         if phase.isBusy {
-            ProgressView()
-                .scaleEffect(0.5)
-                .frame(width: 10, height: 10)
+            if reduceMotion {
+                Image(systemName: "circle.dotted")
+                    .accessibilityHidden(true)
+            } else {
+                ProgressView()
+                    .scaleEffect(0.5)
+                    .frame(width: 12, height: 12)
+                    .accessibilityHidden(true)
+            }
         } else if case .sleeping = phase {
-            Image(systemName: "clock").font(.system(size: 9))
+            Image(systemName: "clock")
+                .accessibilityHidden(true)
         }
     }
 
     @ViewBuilder private var phaseLabel: some View {
         switch phase {
         case .idle:    EmptyView()
-        case .starting: Text("Starting…")
-        case .scanning: Text("Scanning…")
+        case .starting: Text(language.starting)
+        case .scanning: Text(language.scanning)
         case .sleeping:
             HStack(spacing: 2) {
-                Text("Next in")
-                Text("\(countdown)s")
+                Text(language.next_in)
+                Text("\(countdown)\(language.seconds_suffix)")
                     .monospacedDigit()
-                    .contentTransition(.numericText(countsDown: true))
-                    .animation(.linear(duration: 0.4), value: countdown)
+                    .contentTransition(reduceMotion ? .identity : .numericText(countsDown: true))
+                    .animation(reduceMotion ? nil : .linear(duration: 0.4), value: countdown)
             }
         }
     }
@@ -71,14 +81,20 @@ private struct PhaseIndicatorView: View {
 private struct CoreDot: View {
     let assignment: CoreAssignment
     @State private var scale: CGFloat = 1
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Circle()
             .fill(assignment.color)
             .frame(width: 8, height: 8)
             .scaleEffect(scale)
-            .animation(.easeInOut(duration: 0.3), value: assignment)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: assignment)
+            .accessibilityHidden(true)
             .onChange(of: assignment) { _, _ in
+                guard !reduceMotion else {
+                    scale = 1
+                    return
+                }
                 withAnimation(.spring(response: 0.15, dampingFraction: 0.3)) { scale = 1.7 }
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.55).delay(0.12)) { scale = 1 }
             }
@@ -87,7 +103,7 @@ private struct CoreDot: View {
 
 // MARK: - AllocationState
 
-// Drives gradient color selection in CardGradientLayer.
+// Drives the compact process-status badge.
 // Computed from assignedProcesses + isRunning — never stored in AppStorageConfig.
 private enum AllocationState: Equatable {
     case idle
@@ -109,60 +125,23 @@ private enum AllocationState: Equatable {
     }
 }
 
-// MARK: - CardGradientLayer
-
-// Soft animated gradient rendered as a .background() inside a card's content area.
-// Uses two independent animations:
-//   • shift  – repeating 3s easeInOut that rotates the gradient diagonal (always running)
-//   • fade   – 0.65s easeInOut triggered by allocationState changes (cross-fades colors)
-private struct CardGradientLayer: View {
-    let allocationState: AllocationState
-
-    @State private var shift = false
-    // Separate rendered state so color cross-fades are isolated from the shift animation
-    @State private var renderedState: AllocationState = .idle
-    @State private var layerOpacity: Double = 0
-
-    var body: some View {
-        LinearGradient(
-            colors: colors(for: renderedState),
-            startPoint: shift ? .topLeading  : .topTrailing,
-            endPoint:   shift ? .bottomTrailing : .bottomLeading
-        )
-        .opacity(layerOpacity)
-        .onAppear {
-            // Snap to initial state without animating
-            renderedState = allocationState
-            layerOpacity  = allocationState != .idle ? 1 : 0
-            startShift()
-        }
-        .onChange(of: allocationState) { _, new in
-            // Cross-fade colors and opacity together
-            withAnimation(.easeInOut(duration: 0.65)) {
-                renderedState = new
-                layerOpacity  = new != .idle ? 1 : 0
-            }
+private extension AllocationState {
+    var label: String {
+        switch self {
+        case .idle: return "Idle"
+        case .active: return "Monitoring"
+        case .efficiency: return "Efficiency"
+        case .performance: return "Performance"
+        case .mixed: return "Mixed"
         }
     }
 
-    private func startShift() {
-        withAnimation(.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
-            shift.toggle()
-        }
-    }
-
-    private func colors(for state: AllocationState) -> [Color] {
-        switch state {
-        case .idle:
-            return [.clear, .clear]
-        case .active:
-            return [Color.blue.opacity(0.16), Color.indigo.opacity(0.10), .clear]
-        case .efficiency:
-            return [Color.blue.opacity(0.20), Color.blue.opacity(0.08), .clear]
-        case .performance:
-            return [Color.orange.opacity(0.20), Color.orange.opacity(0.08), .clear]
-        case .mixed:
-            return [Color.blue.opacity(0.16), Color.purple.opacity(0.08), Color.orange.opacity(0.16)]
+    var accent: Color {
+        switch self {
+        case .idle: return .secondary
+        case .active, .efficiency: return .blue
+        case .performance: return .orange
+        case .mixed: return .purple
         }
     }
 }
@@ -177,7 +156,7 @@ struct CardView<Trailing: View, Content: View>: View {
     let trailing: Trailing
     let content: Content
 
-    private let radius: CGFloat = 11
+    private let radius: CGFloat = 14
 
     init(
         icon: String,
@@ -194,32 +173,37 @@ struct CardView<Trailing: View, Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
-            HStack(spacing: 0) {
-                Label(title, systemImage: icon)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+            HStack(spacing: 10) {
+                Image(systemName: icon)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.tint)
+                    .frame(width: 24, height: 24)
+                    .background(Color.accentColor.opacity(0.10), in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                    .accessibilityHidden(true)
+
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.primary)
                 Spacer(minLength: 8)
                 trailing
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
 
-            Divider()
+            Divider().opacity(0.65)
 
             // Content – each card manages its own inner padding
             content
         }
         // Fill first, then clip all children (including inner backgrounds) to the rounded rect.
         // Shadow applied after clip so it traces the card outline, not the inner content.
-        .background(Color.white.opacity(0.10))
+        .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .stroke(.white.opacity(0.16), lineWidth: 0.5)
+                .stroke(.primary.opacity(0.10), lineWidth: 0.75)
         )
-        // Two-layer shadow: diffuse outer + crisp contact shadow
-        .shadow(color: .black.opacity(0.35), radius: 14, x: 0, y: 4)
-        .shadow(color: .black.opacity(0.18), radius: 2, x: 0, y: 1)
+        .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 4)
     }
 }
 
@@ -237,27 +221,36 @@ struct KeywordFiltersCard: View {
 
     var body: some View {
         CardView(icon: "tag", title: language.customize_rules) {
-            HStack(spacing: 8) {
+            VStack(alignment: .leading, spacing: 12) {
                 chipList
-                Spacer(minLength: 0)
-                Divider().frame(height: 18)
-                TextField(language.new_rule, text: $config.newCustomPattern)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 140)
-                    .onSubmit(addKeyword)
-                Button(language.add, action: addKeyword)
-                    .disabled(config.newCustomPattern
-                        .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                HStack(spacing: 10) {
+                    TextField(language.new_rule, text: $config.newCustomPattern)
+                        .textFieldStyle(.roundedBorder)
+                        .controlSize(.small)
+                        .frame(maxWidth: .infinity)
+                        .onSubmit(addKeyword)
+
+                    Button(language.add, action: addKeyword)
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                        .disabled(config.newCustomPattern
+                            .trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
+            .padding(16)
         }
     }
 
     @ViewBuilder
     private var chipList: some View {
         if config.getCustomPatterns().isEmpty {
-            Text("No custom keywords — using defaults")
+            HStack(spacing: 6) {
+                Image(systemName: "line.3.horizontal.decrease.circle")
+                    .accessibilityHidden(true)
+                Text(language.no_custom_keywords)
+            }
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         } else {
@@ -265,7 +258,9 @@ struct KeywordFiltersCard: View {
                 HStack(spacing: 6) {
                     ForEach(config.getCustomPatterns(), id: \.self) { kw in
                         HStack(spacing: 3) {
-                            Text(kw).font(.caption)
+                            Text(kw)
+                                .font(.caption)
+                                .lineLimit(1)
                             Button {
                                 var p = config.getCustomPatterns()
                                 p.removeAll { $0 == kw }
@@ -273,13 +268,16 @@ struct KeywordFiltersCard: View {
                             } label: {
                                 Image(systemName: "xmark")
                                     .font(.system(size: 8, weight: .semibold))
+                                    .frame(width: 20, height: 20)
                             }
                             .buttonStyle(.borderless)
                             .foregroundStyle(.secondary)
+                            .accessibilityLabel(String(format: language.remove_keyword, kw))
                         }
                         .padding(.horizontal, 8)
-                        .padding(.vertical, 3)
-                        .background(.secondary.opacity(0.12), in: Capsule())
+                        .padding(.vertical, 2)
+                        .background(.quaternary, in: Capsule())
+                        .overlay(Capsule().stroke(.quaternary, lineWidth: 0.5))
                     }
                 }
             }
@@ -300,30 +298,55 @@ struct KeywordFiltersCard: View {
 
 struct ProcessTableCard: View {
     @ObservedObject private var config = AppStorageConfig.config
+    @ObservedObject private var language = Language.config
     @State private var selection: Set<Int> = []
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        CardView(icon: "cpu", title: "Active Processes") {
-            countBadge
+        CardView(icon: "cpu", title: language.active_processes) {
+            HStack(spacing: 8) {
+                statusBadge
+                countBadge
+            }
         } content: {
             Group {
                 if config.assignedProcesses.isEmpty {
                     emptyState
-                        .transition(.opacity)
+                        .transition(reduceMotion ? .identity : .opacity)
                 } else {
                     table
-                        .transition(.opacity)
+                        .transition(reduceMotion ? .identity : .opacity)
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: config.assignedProcesses.isEmpty)
-            .background(
-                CardGradientLayer(
-                    allocationState: AllocationState.from(
-                        config.assignedProcesses,
-                        running: config.isRunning
-                    )
-                )
-            )
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: config.assignedProcesses.isEmpty)
+            .transaction { transaction in
+                if reduceMotion {
+                    transaction.animation = nil
+                }
+            }
+        }
+    }
+
+    private var allocationState: AllocationState {
+        AllocationState.from(config.assignedProcesses, running: config.isRunning)
+    }
+
+    private var statusBadge: some View {
+        Text(localizedAllocationLabel)
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(allocationState.accent)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(allocationState.accent.opacity(0.10), in: Capsule())
+    }
+
+    private var localizedAllocationLabel: String {
+        switch allocationState {
+        case .idle: return language.idle
+        case .active: return language.monitoring
+        case .efficiency: return language.efficiency
+        case .performance: return language.performance
+        case .mixed: return language.mixed
         }
     }
 
@@ -334,42 +357,45 @@ struct ProcessTableCard: View {
                 Text("\(config.assignedProcesses.count)")
                     .font(.caption2)
                     .monospacedDigit()
-                    .contentTransition(.numericText())
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(.secondary.opacity(0.15), in: Capsule())
+                    .contentTransition(reduceMotion ? .identity : .numericText())
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 4)
+                    .background(.quaternary, in: Capsule())
                     .foregroundStyle(.secondary)
-                    .animation(.easeOut(duration: 0.2), value: config.assignedProcesses.count)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: config.assignedProcesses.count)
             }
         }
     }
 
     private var emptyState: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             Group {
                 if config.scriptPhase.isBusy {
                     Image(systemName: "hourglass")
-                        .transition(.opacity.combined(with: .scale(scale: 0.7)))
+                        .transition(reduceMotion ? .identity : .opacity.combined(with: .scale(scale: 0.7)))
+                        .accessibilityHidden(true)
                 } else {
                     Image(systemName: "cpu")
-                        .transition(.opacity.combined(with: .scale(scale: 0.7)))
+                        .transition(reduceMotion ? .identity : .opacity.combined(with: .scale(scale: 0.7)))
+                        .accessibilityHidden(true)
                 }
             }
-            .font(.system(size: 26))
+            .font(.system(size: 24, weight: .medium))
             .foregroundStyle(.tertiary)
-            .animation(.easeInOut(duration: 0.25), value: config.scriptPhase.isBusy)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: config.scriptPhase.isBusy)
 
             Text(config.scriptPhase.isBusy
-                 ? "Waiting for processes to be assigned…"
-                 : "Start the script to begin tracking processes")
-                .font(.caption)
+                 ? language.waiting_for_processes
+                 : language.start_tracking_processes)
+                .font(.callout)
                 .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)
-                .contentTransition(.opacity)
-                .animation(.easeInOut(duration: 0.2), value: config.scriptPhase.isBusy)
+                .contentTransition(reduceMotion ? .identity : .opacity)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: config.scriptPhase.isBusy)
         }
-        .frame(maxWidth: .infinity, minHeight: 100)
-        .padding(.vertical, 16)
+        .frame(maxWidth: .infinity, minHeight: 132)
+        .padding(.horizontal, 24)
+        .padding(.vertical, 18)
     }
 
     private var table: some View {
@@ -377,27 +403,31 @@ struct ProcessTableCard: View {
             TableColumn("") { p in
                 CoreDot(assignment: p.coreAssignment)
             }
-            .width(16)
+            .width(22)
 
-            TableColumn("Process") { p in
+            TableColumn(language.process) { p in
                 Text(p.name).lineLimit(1).truncationMode(.middle)
             }
 
-            TableColumn("PID") { p in
+            TableColumn(language.pid) { p in
                 Text(String(p.id))
                     .font(.system(.body, design: .monospaced))
                     .foregroundStyle(.secondary)
             }
             .width(64)
 
-            TableColumn("Core") { p in
-                Label(p.coreAssignment.label, systemImage: p.coreAssignment.symbolName)
-                    .font(.caption)
-                    .foregroundStyle(p.coreAssignment.color)
+            TableColumn(language.core) { p in
+                HStack(spacing: 5) {
+                    Image(systemName: p.coreAssignment.symbolName)
+                        .accessibilityHidden(true)
+                    Text(p.coreAssignment == .efficiency ? language.efficiency : language.performance)
+                }
+                .font(.caption)
+                .foregroundStyle(p.coreAssignment.color)
             }
-            .width(110)
+            .width(122)
         }
-        .frame(minHeight: 120, maxHeight: 260)
+        .frame(minHeight: 148, idealHeight: 188, maxHeight: 280)
     }
 }
 
@@ -409,19 +439,17 @@ struct CoreAllocationCard: View {
 
     var body: some View {
         CardView(icon: "slider.horizontal.3", title: language.advanced_setting) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 4) {
                 Toggle(language.global_search, isOn: $config.useAltPSCommand)
                     .help(config.altPSWarning)
                 Toggle(language.use_focus_check,          isOn: $config.enableFocusCheck)
                 Toggle(language.use_balance_mode,         isOn: $config.enableBalanceCheck)
                 Toggle(language.use_default_rules,        isOn: $config.enableDefaultRules)
                 Toggle(language.reverse_performance_core, isOn: $config.enablePerformanceCore)
-                Toggle("Detect Power Adapter Mode",       isOn: $config.isDetectingPower)
+                Toggle(language.power_adapter_mode,       isOn: $config.isDetectingPower)
             }
-            .padding(14)
-            .background(
-                CardGradientLayer(allocationState: config.isRunning ? .active : .idle)
-            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
         }
     }
 }
@@ -431,24 +459,46 @@ struct CoreAllocationCard: View {
 struct BalanceSettingsCard: View {
     @ObservedObject private var config   = AppStorageConfig.config
     @ObservedObject private var language = Language.config
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         CardView(icon: "gauge.medium", title: language.balance_settings) {
-            VStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 12) {
                 LabeledContent(language.check_threshold) {
                     TextField("", text: $config.BalanceThreshold)
                         .textFieldStyle(.roundedBorder)
-                        .frame(width: 72)
+                        .controlSize(.small)
+                        .frame(width: 80)
                         .multilineTextAlignment(.trailing)
                 }
                 LabeledContent(language.send_threshold) {
                     TextField("", text: $config.CPUThreshold)
                         .textFieldStyle(.roundedBorder)
-                        .frame(width: 72)
+                        .controlSize(.small)
+                        .frame(width: 80)
                         .multilineTextAlignment(.trailing)
                 }
+                Divider()
+                Toggle(language.fps_check_label, isOn: $config.enableFPSCheck)
+                if config.enableFPSCheck {
+                    LabeledContent(language.fps_threshold_label) {
+                        TextField("", text: $config.fpsVarianceThreshold)
+                            .textFieldStyle(.roundedBorder)
+                            .controlSize(.small)
+                            .frame(width: 80)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    .transition(reduceMotion ? .identity : .opacity.combined(with: .move(edge: .top)))
+                }
             }
-            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(16)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: config.enableFPSCheck)
+            .transaction { transaction in
+                if reduceMotion {
+                    transaction.animation = nil
+                }
+            }
         }
     }
 }
@@ -475,14 +525,15 @@ struct ConsoleCard: View {
                             .frame(maxWidth: .infinity)
                             .padding(.top, 12)
                     }
-                    .padding(12)
+                    .padding(16)
                 }
-                .frame(minHeight: 160)
+                .frame(minHeight: 172, idealHeight: 210, maxHeight: 280)
                 .onChange(of: config.output) { _, _ in
                     proxy.scrollTo("end", anchor: .bottom)
                 }
             }
-            .background(Color.black.opacity(0.22))
+            .background(Color.black.opacity(0.10))
+            .textSelection(.enabled)
         }
     }
 }
@@ -493,70 +544,93 @@ struct ContentView: View {
     @ObservedObject private var config   = AppStorageConfig.config
     @ObservedObject private var runner   = ScriptRunner.shared
     @ObservedObject private var language = Language.config
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            header
-            Divider()
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 16) {
-                    KeywordFiltersCard()
-                    ProcessTableCard()
-                    HStack(alignment: .top, spacing: 16) {
-                        CoreAllocationCard()
-                        BalanceSettingsCard()
+        ZStack {
+            VisualEffectView(material: .underWindowBackground, blendingMode: .behindWindow)
+                .ignoresSafeArea()
+
+            VStack(alignment: .leading, spacing: 0) {
+                header
+                Divider().opacity(0.7)
+
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        KeywordFiltersCard()
+                        ProcessTableCard()
+
+                        ViewThatFits(in: .horizontal) {
+                            HStack(alignment: .top, spacing: 16) {
+                                CoreAllocationCard()
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                BalanceSettingsCard()
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                            }
+                            VStack(alignment: .leading, spacing: 16) {
+                                CoreAllocationCard()
+                                BalanceSettingsCard()
+                            }
+                        }
+
+                        runStopButton
+                        ConsoleCard()
                     }
-                    runStopButton
-                    ConsoleCard()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 18)
                 }
-                .padding(20)
             }
         }
-        .background(
-            LinearGradient(
-                colors: [
-                    Color(red: 0.28, green: 0.22, blue: 0.48),
-                    Color(red: 0.20, green: 0.16, blue: 0.38),
-                    Color(red: 0.13, green: 0.10, blue: 0.27)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
-        )
-        .colorScheme(.dark)
-        .frame(minWidth: 560, minHeight: 650)
+        .frame(minWidth: 600, minHeight: 700)
+        .transaction { transaction in
+            if reduceMotion {
+                transaction.animation = nil
+            }
+        }
     }
 
     // MARK: – Header bar
 
     private var header: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 12) {
             Image(systemName: "speedometer")
-                .font(.title3)
-                .foregroundStyle(.secondary)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.tint)
+                .frame(width: 32, height: 32)
+                .background(Color.accentColor.opacity(0.10), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .accessibilityHidden(true)
+
             Text("Efficiency Tool")
                 .font(.headline)
+                .foregroundStyle(.primary)
 
             Spacer()
 
             if config.isRunning {
                 PhaseIndicatorView(phase: config.scriptPhase, countdown: config.sleepCountdown)
-                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    .transition(reduceMotion ? .identity : .opacity.combined(with: .move(edge: .trailing)))
             }
 
-            Circle()
-                .fill(config.isRunning ? Color.green : Color.secondary.opacity(0.35))
-                .frame(width: 8, height: 8)
+            HStack(spacing: 7) {
+                Circle()
+                    .fill(config.isRunning ? Color.green : Color.secondary)
+                    .frame(width: 8, height: 8)
 
-            Text(config.isRunning ? "Running" : "Idle")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .contentTransition(.opacity)
+                Text(config.isRunning ? language.running : language.idle)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .contentTransition(reduceMotion ? .identity : .opacity)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(.quaternary, in: Capsule())
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(config.isRunning ? language.running : language.idle)
         }
         .padding(.horizontal, 20)
-        .padding(.vertical, 14)
-        .animation(.easeInOut(duration: 0.25), value: config.isRunning)
+        .padding(.vertical, 16)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: config.isRunning)
     }
 
     // MARK: – Run / Stop button
@@ -571,16 +645,12 @@ struct ContentView: View {
                 systemImage: config.isRunning ? "stop.fill" : "play.fill"
             )
             .frame(maxWidth: .infinity)
-            .contentTransition(.symbolEffect(.replace))
+            .contentTransition(reduceMotion ? .identity : .symbolEffect(.replace))
         }
         .buttonStyle(.borderedProminent)
-        .tint(config.isRunning ? Color(red: 0.85, green: 0.2, blue: 0.3) : Color(red: 0.45, green: 0.32, blue: 0.80))
+        .tint(config.isRunning ? .red : .accentColor)
         .controlSize(.large)
         .keyboardShortcut(.return)
-        .shadow(
-            color: (config.isRunning ? Color.red : Color(red: 0.55, green: 0.40, blue: 0.95)).opacity(0.5),
-            radius: 14, x: 0, y: 0
-        )
-        .animation(.easeInOut(duration: 0.2), value: config.isRunning)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: config.isRunning)
     }
 }
