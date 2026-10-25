@@ -225,6 +225,17 @@ struct KeywordFiltersCard: View {
                 chipList
                     .frame(maxWidth: .infinity, alignment: .leading)
 
+                if config.enableDefaultRules {
+                    HStack(spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .accessibilityHidden(true)
+                        Text(language.default_rules_caption)
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .help(language.help_default_rules)
+                }
+
                 HStack(spacing: 10) {
                     TextField(language.new_rule, text: $config.newCustomPattern)
                         .textFieldStyle(.roundedBorder)
@@ -441,12 +452,17 @@ struct CoreAllocationCard: View {
         CardView(icon: "slider.horizontal.3", title: language.advanced_setting) {
             VStack(alignment: .leading, spacing: 4) {
                 Toggle(language.global_search, isOn: $config.useAltPSCommand)
-                    .help(config.altPSWarning)
+                    .help(config.altPSWarning + " " + language.help_global_search)
                 Toggle(language.use_focus_check,          isOn: $config.enableFocusCheck)
+                    .help(language.help_focus_check)
                 Toggle(language.use_balance_mode,         isOn: $config.enableBalanceCheck)
+                    .help(language.help_balance_mode)
                 Toggle(language.use_default_rules,        isOn: $config.enableDefaultRules)
+                    .help(language.help_default_rules)
                 Toggle(language.reverse_performance_core, isOn: $config.enablePerformanceCore)
+                    .help(language.help_performance_core)
                 Toggle(language.power_adapter_mode,       isOn: $config.isDetectingPower)
+                    .help(language.help_power_adapter)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)
@@ -471,6 +487,7 @@ struct BalanceSettingsCard: View {
                         .frame(width: 80)
                         .multilineTextAlignment(.trailing)
                 }
+                .help(language.help_check_threshold)
                 LabeledContent(language.send_threshold) {
                     TextField("", text: $config.CPUThreshold)
                         .textFieldStyle(.roundedBorder)
@@ -478,8 +495,10 @@ struct BalanceSettingsCard: View {
                         .frame(width: 80)
                         .multilineTextAlignment(.trailing)
                 }
+                .help(language.help_send_threshold)
                 Divider()
                 Toggle(language.fps_check_label, isOn: $config.enableFPSCheck)
+                    .help(language.help_fps_check)
                 if config.enableFPSCheck {
                     LabeledContent(language.fps_threshold_label) {
                         TextField("", text: $config.fpsVarianceThreshold)
@@ -488,6 +507,7 @@ struct BalanceSettingsCard: View {
                             .frame(width: 80)
                             .multilineTextAlignment(.trailing)
                     }
+                    .help(language.help_fps_threshold)
                     .transition(reduceMotion ? .identity : .opacity.combined(with: .move(edge: .top)))
                 }
             }
@@ -557,6 +577,7 @@ struct ContentView: View {
 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 16) {
+                        ProcessPickerCard()
                         KeywordFiltersCard()
                         ProcessTableCard()
 
@@ -604,6 +625,19 @@ struct ContentView: View {
             Text("Efficiency Tool")
                 .font(.headline)
                 .foregroundStyle(.primary)
+
+            Picker("", selection: $config.useSimpleMode) {
+                Text(language.mode_easy).tag(true)
+                Text(language.mode_pro).tag(false)
+            }
+            .pickerStyle(.segmented)
+            .controlSize(.small)
+            .labelsHidden()
+            .frame(width: 118)
+            .onChange(of: config.useSimpleMode) { _, easy in
+                language.setProMode(!easy)
+            }
+            .help(language.help_mode)
 
             Spacer()
 

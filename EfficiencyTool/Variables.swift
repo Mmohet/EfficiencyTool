@@ -58,6 +58,8 @@ class AppStorageConfig: ObservableObject {
     public static var config = AppStorageConfig()
 
     @AppStorage("customPatterns") public var customPatternsString: String = ""
+    /// 易用模式（true）/ 专业模式（false）。易用模式隐藏高级选项、使用大白话文案。
+    @AppStorage("useSimpleMode") public var useSimpleMode: Bool = true
 
     func getCustomPatterns() -> [String] {
         customPatternsString.isEmpty ? [] : customPatternsString.components(separatedBy: ",")
@@ -70,7 +72,7 @@ class AppStorageConfig: ObservableObject {
     @Published public var newCustomPattern: String = ""
 
     @Published public var useAltPSCommand: Bool = false
-    public let altPSWarning = "⚠️ 启用此选项将完全替代默认的进程筛选命令，会将整个系统进程都放入小核, 建议仅在必要时使用。"
+    public let altPSWarning = "⚠️ 危险选项：开了之后不再按关键词筛选，你名下所有进程都会被钉到小核，整机会明显变慢。只在实验时短时间使用。"
 
     @Published public var output: String = ""
     @Published public var outputcount: Int = 0

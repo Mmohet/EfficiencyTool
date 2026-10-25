@@ -9,14 +9,10 @@ struct EfficiencyToolApp: App {
     // Setting up languages
     init() {
         let pre = Locale.preferredLanguages[0]
+        let chinese = pre.hasPrefix("zh") || pre.hasPrefix("yue")
 
-        if pre.hasPrefix("en") {
-            language.setEnglish()
-        } else if pre.hasPrefix("yue") {
-            language.setChinese()
-        } else if pre.hasPrefix("zh") {
-            language.setChinese()
-        }
+        // 按系统语言 + 上次选择的易用/专业模式应用文案
+        language.apply(chinese: chinese, pro: !AppStorageConfig.config.useSimpleMode)
     }
     var body: some Scene {
         // 隐藏默认窗口
